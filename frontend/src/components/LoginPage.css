@@ -1,0 +1,29 @@
+.overlayStyleLogin{ 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    right: 0;
+    bottom: 0;
+    background-color: #c7c7c7b3;
+    z-index: 1000;
+}
+
+.modalBodyLogin{
+    display: flex;
+    flex-direction: column;
+    position: fixed; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    background-color: lab(100% 0.01 -0.01);
+    padding: 20px;
+    z-index: 1000;
+    text-align: center;
+    justify-content: space-between;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    color: white;
+}

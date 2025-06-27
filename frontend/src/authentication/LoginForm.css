@@ -1,0 +1,47 @@
+.overlayStyleLogin{ 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    right: 0;
+    bottom: 0;
+    background-color: #ffffff;
+    z-index: 1000;
+}
+
+.modalBodyLogin{
+    display: flex;
+    flex-direction: column;
+    height: 33vh;
+    width: 50vh;
+    position: fixed; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    background-color: lab(100% 0.01 -0.01);
+    padding: 20px;
+    z-index: 1000;
+    text-align: center;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    color: #000000;
+}
+
+
+.modalBodyLogin input[type="text"], 
+.modalBodyLogin input[type="number"], 
+.modalBodyLogin input[type="email"], 
+.modalBodyLogin input[type="password"],
+.modalBodyLogin select {
+  padding: 12px;
+  margin-bottom: 0;
+  border: 1px solid black;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 150px;
+  font-size: 1rem;
+}
