@@ -1,0 +1,11 @@
+.initialPage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  justify-content: space-between;
+}
+
+.top {
+    
+    margin: 1px solid gold; 
+}

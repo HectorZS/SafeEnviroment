@@ -16,50 +16,23 @@ datasource db {
 
 model User {
     user_id            Int      @id @default(autoincrement())
-    username           String
-    email              String
+    email              String   @unique
+    username           String   @unique
     password           String
-    reputation_score   Float
+    latitude           Decimal?
+    longitude          Decimal?
 }
 
 model Post {
     post_id            Int      @id @default(autoincrement())
     title              String
+    category           String
     description        String 
-    urgency            Int
-    status             Int
-    type               Int
+    urgency            String
+    status             String?
     created_at         DateTime  @default(now())
-    user_id            Int
-    location_id        Int
+    creator_id         Int
+    volunteer_id       Int?
 }
 
-model Location {
-  location_id          Int     @id @default(autoincrement())
-  name                 String
-  latitude             String 
-  longitude            String 
-  description          String 
-}
-
-
-model Volunteer {
-  volunteer_id          Int     @id @default(autoincrement())
-  post_id               Int
-  user_id               Int
-}
-
-model Reputation {
-  user_id             Int       @id @default(autoincrement())
-  score               Float
-}
-
-model Rating {
-  rating_id          Int     @id @default(autoincrement())
-  score              Float
-  comment            String
-  rater_id           Int
-  ratee_id           Int
-  post_id            Int
-}
 

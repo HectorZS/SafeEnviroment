@@ -1,0 +1,18 @@
+.navBarBody {
+    display: flex;    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid black; 
+    border-radius: 12px;
+}
+
+.navigationLinks {
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.navigationLinks button{
+    border-radius: 10px; 
+}
+
