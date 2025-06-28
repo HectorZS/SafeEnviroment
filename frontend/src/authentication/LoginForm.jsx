@@ -52,10 +52,6 @@ const LoginForm = () => {
                 <input type="text" name="username" value={formData.username} onChange={handleChange}/>
                 <label>Password</label>
                 <input type="password" name="password" value={formData.password} onChange={handleChange}/>
-                {/* <label>latitude</label>
-                <input type="number" name="latitude" value={(formData.latitude)} onChange={handleChange}/>
-                <label>longitude</label>
-                <input type="number" name="longitude" value={(formData.longitude)} onChange={handleChange}/> */}
                 <button className='submit' onClick={handleSubmit}>Sign up</button>
             </div>
         </div>
