@@ -9,7 +9,7 @@ app.use(express.json())
 
 
 const corsOptions = {
-    origin: 'http://localhost:5174', 
+    origin: ['http://localhost:5174', "https://safeenviroment-frontend.onrender.com"], 
     credentials: true,
 }
 app.use(cors(corsOptions))
