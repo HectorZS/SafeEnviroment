@@ -35,7 +35,6 @@ router.post('/posts', isAuthenticated, async (req, res) => {
 router.delete('/posts/:id', isAuthenticated, async (req, res) => {
     try {
         const postId = parseInt(req.params.id)
-        // console.log("ID: ", postId)
         const post = await prisma.post.findUnique({
             where: {post_id : postId}
         })

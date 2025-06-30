@@ -5,7 +5,6 @@ const session = require('express-session')
 const PORT = 3000
 const authRouter = require('./routes/auth')
 const postRouter = require('./routes/postRoutes')
-// app.use(cors())
 app.use(express.json())
 
 

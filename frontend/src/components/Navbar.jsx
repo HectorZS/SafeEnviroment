@@ -10,14 +10,14 @@ export default function Navbar(){
     const handleLogout = async () => {
         await fetch(`${import.meta.env.VITE_URL}/logout`, { method: "POST", credentials: "include" });
         setUser(null); // Remove user from context
-        window.location.href = "/login"; // Redirect to homepage
+        window.location.href = "/login"; // Redirect to login
     };
 
     return (
         <div>
             <div className='navBarBody'>
                 <div className='leftNavBar'>
-                    <Link to='/' className='logo'>
+                    <Link to='/profilecenter' className='logo'>
                         SafeEnvironment
                     </Link>
                 </div>

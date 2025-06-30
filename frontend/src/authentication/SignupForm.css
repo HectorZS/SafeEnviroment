@@ -32,8 +32,8 @@
 }
 
 
+.modalBodySignup input[type="address"], 
 .modalBodySignup input[type="text"], 
-.modalBodySignup input[type="number"], 
 .modalBodySignup input[type="email"], 
 .modalBodySignup input[type="password"], 
 .modalBodySignup select {
