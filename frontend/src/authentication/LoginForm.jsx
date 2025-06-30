@@ -19,7 +19,6 @@ const LoginForm = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
         try {
             const response = await fetch(`${import.meta.env.VITE_URL}/login`, {
                 method: "POST",
@@ -33,7 +32,7 @@ const LoginForm = () => {
             if (response.ok) {
                 setMessage({ type: "success", text: "Login successful!" });
                 setUser(data); // Set the user in context with id and username
-                navigate("/"); // Redirect to the homepage
+                navigate("/profilecenter"); // Redirect to the homepage
             } else {
                 setMessage({ type: "error", text: data.error || "Login failed." });
             }

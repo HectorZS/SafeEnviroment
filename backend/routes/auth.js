@@ -4,10 +4,15 @@ const session = require('express-session')
 const { PrismaClient } = require('../generated/prisma/index.js')
 const prisma = new PrismaClient()
 const router = express.Router()
+const getCoordsForAdressModule = require('./mapsRoutes.js');
+const getCoordsForAdress = getCoordsForAdressModule.default;
+
+
 
 router.post('/signup', async(req, res) => {
+    let coordinates, lat, lng
     try {
-        const { email, username, password, latitude, longitude  } = req.body
+        const { email, username, password, address  } = req.body
         if (!username || !password || !email) {
             return res.status(400).json({error: "You left some field in blank, all the fields should be filled out"})
         }
@@ -30,6 +35,10 @@ router.post('/signup', async(req, res) => {
             return res.status(400).json({error: "Username already exists"})
         }
 
+        coordinates = await getCoordsForAdress(address)
+        lat = coordinates.lat
+        lng = coordinates.lng
+
         const hashedPassword = await bcrypt.hash(password, 10)
 
         const newUser = await prisma.user.create({
@@ -37,8 +46,8 @@ router.post('/signup', async(req, res) => {
                email, 
                username, 
                password: hashedPassword, 
-               latitude, 
-               longitude
+               latitude: lat, 
+               longitude: lng
             }
         })
         req.session.user = newUser
@@ -69,8 +78,7 @@ router.post("/login", async(req, res) => {
         }
         console.log(user)
         req.session.user = user
-        res.json({ message: `Good to see you again, ${username}`})
-        // res.json({message: "Login succesful!"})
+        res.json(user)
     } catch (error) {
         console.error(error)
         res.status(500).json({error: "Something went wrong during login"})
@@ -83,7 +91,7 @@ router.get("/me", async (req, res) => {
             where: { user_id: req.session.user.user_id }, 
             select: { username: true }
         }); 
-        res.json({ id: req.session.user.user_id, username: user.username })
+        res.json({ id: req.session.user.user_id, username: user.username, latitude: req.session.user.latitude, longitude: req.session.user.longitude})
     } catch (error) {
         res.status(401).json({ message: "not logged in" })
     }

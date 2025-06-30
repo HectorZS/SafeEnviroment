@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { useUser } from '../context/UserContext';
 
 export default function SignupForm() {
-    const [formData, setFormData] = useState({ email: "", username: "", password: "", latitude: null, longitude: null})
+    const [formData, setFormData] = useState({ email: "", username: "", password: "", address: ""})
     const { setUser } = useUser()
+
     function handleChange(event) {
         const { name, value } = event.target;
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -24,7 +25,7 @@ export default function SignupForm() {
 
             if (response.ok) {
                 setUser(data); // Store user session in context
-                window.location.href = "/"; // Redirect to homepage
+                window.location.href = "/profilecenter"; // Redirect to homepage
             } else {
                 console.error("Signup failed:", data.error);
             }
@@ -45,10 +46,8 @@ export default function SignupForm() {
                 <input type="text" name="username" value={formData.username} onChange={handleChange}/>
                 <label>Password</label>
                 <input type="password" name="password" value={formData.password} onChange={handleChange}/>
-                {/* <label>latitude</label>
-                <input type="number" name="latitude" value={(formData.latitude)} onChange={handleChange}/>
-                <label>longitude</label>
-                <input type="number" name="longitude" value={(formData.longitude)} onChange={handleChange}/> */}
+                <label>Address</label>
+                <input type="address" name="address" value={formData.address} onChange={handleChange}/>
                 <button className='submit' onClick={handleSubmit}>Sign up</button>
             </div>
         </div>
