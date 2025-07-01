@@ -42,6 +42,7 @@ let sessionConfig = {
 }
 
 app.use(session(sessionConfig))
+app.set("trust proxy", 1)
 app.use(authRouter)
 app.use(postRouter)
 app.get('/homepage', (req, res) => {

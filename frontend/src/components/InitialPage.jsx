@@ -2,10 +2,13 @@ import './InitialPage.css'
 import Navbar from './Navbar.jsx'
 import Map from './CreateMap.jsx'
 import { useUser } from '../context/UserContext.jsx'
+import { useState, useEffect } from 'react'
 
 
 export default function InitialPage(){
     const { user, setUser } = useUser(); 
+    const [posts, setPosts] = useState(null);
+
 
     console.log("User: ", user)
     const loadCurrentPosts = () => {

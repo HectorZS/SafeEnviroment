@@ -17,8 +17,8 @@ export default function Navbar(){
         <div>
             <div className='navBarBody'>
                 <div className='leftNavBar'>
-                    <Link to='/profilecenter' className='logo'>
-                        SafeEnvironment
+                    <Link to='/create-post' className='logo'>
+                        Create post
                     </Link>
                 </div>
                 <div className='rightNavBar'>
