@@ -86,7 +86,14 @@ router.post("/login", async(req, res) => {
 })
 
 router.get("/me", async (req, res) => {
-    console.log("/me, current's user session: ", req.session.user.user_id)
+    router.get("/me", async (req, res) => {
+    if (!req.session.user) {
+        console.log("Trigger on user, not logged in")
+        return res.status(401).json({ message: "not logged in" });
+    }
+    // your existing code
+    });
+    // console.log("/me, current's user session: ", req.session.user.user_id)
     try {
         const user = await prisma.user.findUnique({
             where: { user_id: req.session.user.user_id }, 

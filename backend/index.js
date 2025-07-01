@@ -28,22 +28,38 @@ client.connect().catch(console.error);
 const store = new RedisStore({ client: client})
 
 
-let sessionConfig = {
+// let sessionConfig = {
+//   name: 'sessionId',
+//   store: store, 
+//   secret: process.env.SECRET,
+//   cookie: {
+//     maxAge: 1000 * 60 * 5,
+//     secure: process.env.RENDER === "production" ? true : false,
+//     httpOnly: false,
+//     sameSite: process.env.RENDER === "production" ? 'none' : 'lax', 
+//   },
+//   resave: false,
+//   saveUninitialized: false,
+// }
+
+// app.use(session(sessionConfig))
+// app.set("trust proxy", 1)
+let sessionConfig = { // new
   name: 'sessionId',
-  store: store, 
+  store: store,
   secret: process.env.SECRET,
   cookie: {
     maxAge: 1000 * 60 * 5,
-    secure: process.env.RENDER === "production" ? true : false,
-    httpOnly: false,
-    sameSite: process.env.RENDER === "production" ? 'none' : 'lax', 
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+    sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax',
   },
   resave: false,
   saveUninitialized: false,
 }
 
-app.use(session(sessionConfig))
-app.set("trust proxy", 1)
+app.set("trust proxy", 1) // keep this for proxy support
+app.use(session(sessionConfig)) // new
 app.use(authRouter)
 app.use(postRouter)
 app.get('/homepage', (req, res) => {
