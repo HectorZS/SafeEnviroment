@@ -11,7 +11,7 @@ export default function CreatePostForm(){
         setFormData(prev => ({ ...prev, [name]: value }));
     }
 
-
+   
     return (
         <div className='postForm'>
             <div className='titleForm'>
