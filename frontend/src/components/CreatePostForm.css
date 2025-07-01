@@ -1,0 +1,11 @@
+
+.postForm{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.buttons{
+    display: flex;
+    flex-direction: column;
+}
