@@ -10,6 +10,19 @@ export default function InitialPage(){
     const [posts, setPosts] = useState(null);
 
 
+    useEffect(() => {
+        fetch(`${import.meta.env.VITE_URL}/me`, { credentials: "include" })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.id) {
+                    setUser(data); // Persist login state
+                    console.log("USER INSIDE, firstfetch file")
+                }
+                console.log("THIS IS FROM first fetc")
+            });
+    }, []);
+
+
     console.log("User: ", user)
     const loadCurrentPosts = () => {
             return (
