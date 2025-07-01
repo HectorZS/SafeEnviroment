@@ -86,13 +86,17 @@ router.post("/login", async(req, res) => {
 })
 
 router.get("/me", async (req, res) => {
+    console.log("/me, current's user session: ", req.session.user.user_id)
     try {
         const user = await prisma.user.findUnique({
             where: { user_id: req.session.user.user_id }, 
             select: { username: true }
         }); 
+        console.log("USER backend: ", user); 
+        console.log("Backend user: ", user.username)
         res.json({ id: req.session.user.user_id, username: user.username, latitude: req.session.user.latitude, longitude: req.session.user.longitude})
     } catch (error) {
+        console.log("ERROR in /me")
         res.status(401).json({ message: "not logged in" })
     }
 })
