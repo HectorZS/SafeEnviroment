@@ -86,6 +86,7 @@ router.post("/login", async(req, res) => {
 })
 
 router.get("/me", async (req, res) => {
+    console.log("RENDER: ", process.env.RENDER)
     console.log("REquest: ", req.session)
     if (!req.session.user) {
         console.log("Trigger on user, not logged in")

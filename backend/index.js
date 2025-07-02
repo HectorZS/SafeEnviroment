@@ -16,7 +16,6 @@ const corsOptions = {
 }
 app.use(cors(corsOptions))
 
-
 const client = createClient({
     legacyMode: true,
     url: process.env.REDIS_DB_URL,
