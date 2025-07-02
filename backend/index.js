@@ -10,6 +10,12 @@ const authRouter = require('./routes/auth')
 const postRouter = require('./routes/postRoutes')
 app.use(express.json())
 
+const corsOptions = {
+    origin: ['http://localhost:5174', "https://safeenviroment-frontend.onrender.com"], 
+    credentials: true,
+}
+app.use(cors(corsOptions))
+
 const client = createClient({
     legacyMode: true,
     url: process.env.REDIS_DB_URL,
@@ -17,12 +23,6 @@ const client = createClient({
       tls: true
     }
 });
-
-const corsOptions = {
-    origin: ['http://localhost:5174', "https://safeenviroment-frontend.onrender.com"], 
-    credentials: true,
-}
-app.use(cors(corsOptions))
 
 client.connect().catch(console.error); 
 const store = new RedisStore({ client: client})
@@ -34,7 +34,7 @@ let sessionConfig = {
   secret: process.env.SECRET,
   cookie: {
     maxAge: 1000 * 60 * 5,
-    secure: process.env.RENDER === "production" ? true : false,
+    secure: process.env.RENDER === "production",
     httpOnly: false,
     sameSite: process.env.RENDER === "production" ? 'none' : 'lax', 
   },

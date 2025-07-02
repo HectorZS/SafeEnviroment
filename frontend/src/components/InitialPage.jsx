@@ -9,7 +9,6 @@ export default function InitialPage(){
     const { user, setUser } = useUser(); 
     const [posts, setPosts] = useState(null);
 
-
     console.log("User: ", user)
     const loadCurrentPosts = () => {
             return (

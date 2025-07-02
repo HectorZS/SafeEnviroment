@@ -11,9 +11,7 @@ export const UserProvider = ({ children }) => {
             .then((data) => {
                 if (data.id) {
                     setUser(data); // Persist login state
-                    console.log("USER INSIDE, create context file")
                 }
-                console.log("THIS IS FROM CREATE CONTEXT")
             });
     }, []);
 
