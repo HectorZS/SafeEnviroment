@@ -10,8 +10,7 @@ function App() {
   return (
       <Router>
         <Routes>
-          <Route path="/" element={<InitialPage/>}/>
-          <Route path="/login" element={<LoginForm/>}/>
+          <Route path="/" element={<LoginForm/>}/>
           <Route path="/signup" element={<SignupForm/>}/>
           <Route path="/profilecenter" element={<InitialPage/>}/>
           <Route path="/create-post" element={<CreatePostForm/>}/>

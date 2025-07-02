@@ -2,6 +2,7 @@ import './CreatePostForm'
 import { useState, useEffect } from 'react'
 import { useUser } from '../context/UserContext'
 import { useNavigate } from 'react-router-dom'
+import { HiArrowCircleLeft } from "react-icons/hi";
 
 export default function CreatePostForm(){
     const [formData, setFormData] = useState({ title: "", category: "", description: "", urgency: ""})
@@ -16,6 +17,10 @@ export default function CreatePostForm(){
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
+            if(formData.title === '' || formData.category === '' || formData.description === '' || formData.urgency === ''){ 
+                alert("Please fill out the required fields");
+                return
+            }
             const response = await fetch(`${import.meta.env.VITE_URL}/posts`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -39,6 +44,7 @@ export default function CreatePostForm(){
    
     return (
         <div className='postForm'>
+            <HiArrowCircleLeft style={{ fontSize: '2rem', color: '#01959d', marginLeft: '25px', width: '3vw', height: '3vw', display: "block"}} onClick={() => {navigate('/profilecenter')}}/>
             <div className='titleForm'>
                 <h2>Create new post</h2>
             </div>

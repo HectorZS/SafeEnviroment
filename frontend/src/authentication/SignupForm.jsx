@@ -1,6 +1,8 @@
 import './SignupForm.css'
 import { useState } from 'react' 
 import { useUser } from '../context/UserContext';
+import { Link } from 'react-router-dom'
+
 
 export default function SignupForm() {
     const [formData, setFormData] = useState({ email: "", username: "", password: "", address: ""})
@@ -14,6 +16,14 @@ export default function SignupForm() {
     const handleSubmit = async (event) => {
     event.preventDefault();
         try {
+            if(formData.email === '' || formData.username === '' || formData.password === '' || formData.address === ''){ 
+                alert("Please fill out the required fields");
+                return
+            }
+            if (formData.password.length < 8) {
+                alert("Password must be at least 8 characters long")
+                return 
+            }
             const response = await fetch(`${import.meta.env.VITE_URL}/signup`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -49,6 +59,12 @@ export default function SignupForm() {
                 <label>Address</label>
                 <input type="address" name="address" value={formData.address} onChange={handleChange}/>
                 <button className='submit' onClick={handleSubmit}>Sign up</button>
+                <div className="loginlink">
+                    <p>Already have an account? </p>
+                   <Link to='/'>
+                        <p>Log in</p>
+                   </Link>
+                </div>
             </div>
         </div>
     )
