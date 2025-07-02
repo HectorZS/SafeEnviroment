@@ -1,10 +1,12 @@
 import './CreatePostForm'
 import { useState, useEffect } from 'react'
 import { useUser } from '../context/UserContext'
+import { useNavigate } from 'react-router-dom'
 
 export default function CreatePostForm(){
     const [formData, setFormData] = useState({ title: "", category: "", description: "", urgency: ""})
     const { setUser } = useUser(); 
+    let navigate = useNavigate(); 
 
     function handleChange(event) {
         const { name, value } = event.target;
@@ -25,7 +27,7 @@ export default function CreatePostForm(){
 
             if (response.ok) {
                 console.log("Post added successfully");
-                window.location.href = "/profilecenter"; // Redirect to the homepage
+                navigate("/profilecenter"); // Redirect to the homepage
             } else {
                 console.error("Failed to add post:", data.error);
             }
