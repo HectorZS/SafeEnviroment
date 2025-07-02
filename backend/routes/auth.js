@@ -76,7 +76,7 @@ router.post("/login", async(req, res) => {
         if(!isValidPsswd) {
             return res.status(401).json({error: "Invalid username or password"})
         }
-        console.log(user)
+        console.log("UUUUS: ", user)
         req.session.user = user
         res.json(user)
     } catch (error) {

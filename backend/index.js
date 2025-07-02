@@ -35,7 +35,8 @@ let sessionConfig = {
   secret: process.env.SECRET,
   cookie: {
     maxAge: 1000 * 60 * 5,
-    secure: process.env.RENDER === "production" ? true : false,
+    // secure: process.env.RENDER === "production" ? true : false,
+    secure: process.env.RENDER === "production",
     httpOnly: false,
     sameSite: process.env.RENDER === "production" ? 'none' : 'lax', 
   },
