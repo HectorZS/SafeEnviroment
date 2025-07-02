@@ -76,7 +76,6 @@ router.post("/login", async(req, res) => {
         if(!isValidPsswd) {
             return res.status(401).json({error: "Invalid username or password"})
         }
-        console.log("UUUUS: ", user)
         req.session.user = user
         res.json(user)
     } catch (error) {
@@ -86,20 +85,15 @@ router.post("/login", async(req, res) => {
 })
 
 router.get("/me", async (req, res) => {
-    console.log("RENDER: ", process.env.RENDER)
-    console.log("REquest: ", req.session)
     if (!req.session.user) {
         console.log("Trigger on user, not logged in")
         return res.status(401).json({ message: "not logged in" });
     }
-    // console.log("/me, current's user session: ", req.session.user.user_id)
     try {
         const user = await prisma.user.findUnique({
             where: { user_id: req.session.user.user_id }, 
             select: { username: true }
         }); 
-        console.log("USER backend: ", user); 
-        console.log("Backend user: ", user.username)
         res.json({ id: req.session.user.user_id, username: user.username, latitude: req.session.user.latitude, longitude: req.session.user.longitude})
     } catch (error) {
         console.log("ERROR in /me")
