@@ -51,16 +51,26 @@ export default function CreatePostForm(){
                     onChange={handleChange}
                 >
                     <option value="">Category</option>
-                    <option value="toolAndEquip">Tool & Equipment Lending</option>
-                    <option value="petCare">Pet Care</option>
-                    <option value="errAndAssis">Errands & Assistance</option>
-                    <option value="homeAndYard">Home & Yard Help</option>
-                    <option value="socialAndCommu">Social & Community Engagement</option>
+                    <option value="Tool & Equipment Lending">Tool & Equipment Lending</option>
+                    <option value="Pet Care">Pet Care</option>
+                    <option value="Errands & Assistance">Errands & Assistance</option>
+                    <option value="Home & Yard Help">Home & Yard Help</option>
+                    <option value="Social & Community Engagement">Social & Community Engagement</option>
                 </select>
                 <label>Description</label>
                 <input type="text" name="description" value={formData.description} onChange={handleChange}/>
                 <label>Urgency</label>
-                <input type="text" name="urgency" value={formData.urgency} onChange={handleChange}/>
+                <select
+                    id="urgency"
+                    name="urgency"
+                    value={formData.urgency}
+                    onChange={handleChange}
+                >
+                    <option value="">Urgency</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
                 <button className='submit' onClick={handleSubmit}>Create post</button>
             </div>
         </div>

@@ -21,6 +21,9 @@ export default function Navbar(){
                         Create post
                     </Link>
                 </div>
+                <h2 className='centerNavBar'>
+                    {user ? `Welcome, ${user.username}` : 'Loading...'}
+                </h2>
                 <div className='rightNavBar'>
                     <div className='navigationLinks'>
                         <button onClick={handleLogout}>Log Out</button>
