@@ -38,7 +38,6 @@ router.delete('/posts/:id', isAuthenticated, async (req, res) => {
         const post = await prisma.post.findUnique({
             where: {post_id : postId}
         })
-        console.log("POST: ", post)
         if (!post) {
             return res.status(404).json({ error: "Post not found" })
         }
@@ -49,7 +48,6 @@ router.delete('/posts/:id', isAuthenticated, async (req, res) => {
         const deletePost = await prisma.post.delete({
             where: { post_id: parseInt(postId) }
         })
-        console.log("HERE")
         res.status(204).json({ message: `Deleted succesfully, ${req.session.user.username}`})
     } catch (error) {
         res.status(500).json({ error: "Failed to delete post" })

@@ -11,6 +11,29 @@ export default function CreatePostForm(){
         setFormData(prev => ({ ...prev, [name]: value }));
     }
 
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+                credentials: "include", // Send session cookie for authentication
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log("Post added successfully");
+                window.location.href = "/profilecenter"; // Redirect to the homepage
+            } else {
+                console.error("Failed to add post:", data.error);
+            }
+        } catch (error) {
+            console.error("Network error. Please try again.", error);
+        }
+    };
+
    
     return (
         <div className='postForm'>
