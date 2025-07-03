@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from '../context/UserContext';
+import { Link } from 'react-router-dom'
 import './LoginForm.css';
 
 const LoginForm = () => {
@@ -19,6 +20,10 @@ const LoginForm = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        if(formData.email === '' || formData.username === '' || formData.password === ''){ 
+            alert("Please fill out the required fields");
+            return
+        }
         try {
             const response = await fetch(`${import.meta.env.VITE_URL}/login`, {
                 method: "POST",
@@ -51,7 +56,13 @@ const LoginForm = () => {
                 <input type="text" name="username" value={formData.username} onChange={handleChange}/>
                 <label>Password</label>
                 <input type="password" name="password" value={formData.password} onChange={handleChange}/>
-                <button className='submit' onClick={handleSubmit}>Sign up</button>
+                <button className='submit' onClick={handleSubmit}>Log in</button>
+                <div className="signuplink">
+                    <p>Don't have an account? </p>
+                   <Link to='/signup'>
+                        <p>Sign up</p>
+                   </Link>
+                </div>
             </div>
         </div>
     );

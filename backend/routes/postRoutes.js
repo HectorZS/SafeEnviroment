@@ -11,6 +11,20 @@ const isAuthenticated = (req, res, next) => {
     next();
 };
 
+router.get('/user/posts', async (req, res) => {
+    try {
+        const userId = parseInt(req.session.user.user_id); 
+        const posts = await prisma.post.findMany({
+            where: {
+                creator_id: userId
+            }, 
+        }); 
+        res.json(posts)
+    } catch (error) {
+        res.status(500).send('Server error')
+    }
+})
+
 router.post('/posts', isAuthenticated, async (req, res) => {
     try {
         const { title, category, description, urgency, status, volunteer_id } = req.body
@@ -38,7 +52,6 @@ router.delete('/posts/:id', isAuthenticated, async (req, res) => {
         const post = await prisma.post.findUnique({
             where: {post_id : postId}
         })
-        console.log("POST: ", post)
         if (!post) {
             return res.status(404).json({ error: "Post not found" })
         }
@@ -49,7 +62,6 @@ router.delete('/posts/:id', isAuthenticated, async (req, res) => {
         const deletePost = await prisma.post.delete({
             where: { post_id: parseInt(postId) }
         })
-        console.log("HERE")
         res.status(204).json({ message: `Deleted succesfully, ${req.session.user.username}`})
     } catch (error) {
         res.status(500).json({ error: "Failed to delete post" })

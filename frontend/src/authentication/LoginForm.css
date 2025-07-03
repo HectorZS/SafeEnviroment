@@ -32,6 +32,12 @@
 }
 
 
+.signuplink {
+  display: flex; 
+  width: 235px;
+  justify-content: space-between;
+}
+
 .modalBodyLogin input[type="text"], 
 .modalBodyLogin input[type="number"], 
 .modalBodyLogin input[type="email"], 
