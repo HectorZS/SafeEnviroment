@@ -51,9 +51,9 @@ const LoginForm = () => {
             <div className='modalBodyLogin'>
                 <h3>Login</h3>
                 <label>Email</label>
-                <input type="email" name="email" size="50" pattern=".+@example\.com" value={formData.email} onChange={handleChange}></input>
+                <input type="email"  placeholder='example@domain.com' name="email" size="50" pattern=".+@example\.com" value={formData.email} onChange={handleChange}></input>
                 <label>Username</label>
-                <input type="text" name="username" value={formData.username} onChange={handleChange}/>
+                <input type="text"  placeholder='Username...' name="username" value={formData.username} onChange={handleChange}/>
                 <label>Password</label>
                 <input type="password" name="password" value={formData.password} onChange={handleChange}/>
                 <button className='submit' onClick={handleSubmit}>Log in</button>

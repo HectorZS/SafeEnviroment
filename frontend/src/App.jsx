@@ -4,6 +4,7 @@ import InitialPage from './components/InitialPage.jsx'
 import SignupForm from './authentication/SignupForm.jsx';
 import LoginForm from './authentication/LoginForm.jsx';
 import CreatePostForm from './components/CreatePostForm.jsx';
+import HomePage from './components/HomePage.jsx';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
           <Route path="/signup" element={<SignupForm/>}/>
           <Route path="/profilecenter" element={<InitialPage/>}/>
           <Route path="/create-post" element={<CreatePostForm/>}/>
+          <Route path="/homepage" element={<HomePage/>}/>
         </Routes>
       </Router>
   )

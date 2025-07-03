@@ -21,6 +21,7 @@ model User {
     password           String
     latitude           Decimal?
     longitude          Decimal?
+    posts              Post[]
 }
 
 model Post {
@@ -33,6 +34,7 @@ model Post {
     created_at         DateTime  @default(now())
     creator_id         Int
     volunteer_id       Int?
+    creator            User @relation(fields: [creator_id], references: [user_id])
 }
 
 

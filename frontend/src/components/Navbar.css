@@ -1,9 +1,12 @@
 .navBarBody {
-    display: flex;    justify-content: space-between;
+    display: flex;    
+    justify-content: space-between;
     align-items: center;
+    text-align: center;
     padding: 1rem;
     border: 1px solid black; 
     border-radius: 12px;
+    margin-bottom: 10px;
 }
 
 .navigationLinks {
@@ -16,3 +19,8 @@
     border-radius: 10px; 
 }
 
+.leftNavBar {
+    display: flex;
+    flex-direction: column;
+    height: 100;
+}

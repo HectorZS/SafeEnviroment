@@ -11,13 +11,46 @@ const isAuthenticated = (req, res, next) => {
     next();
 };
 
+
+router.get('/posts/search/:query', async (req, res) => {
+    console.log("here")
+    const title = req.params.query
+    if (!title) {
+        return res.status(400).json({ error: 'Missing query parameter'})
+    }
+    try {
+        const posts = await prisma.post.findMany({
+            where: {
+                // creator_id: {
+                //     not: req.session.user.user_id
+                // },
+                title: {
+                    contains: title, 
+                    // mode: 'insensitive', 
+                },
+            }, 
+            orderBy: {
+                created_at: 'desc',
+            }, 
+            take: 10,
+        })
+        res.json(posts);
+        console.log(posts)
+    } catch (error) {
+        console.error("Error searching posts: ", error); 
+        res.status(500).json({ error: 'Server error' })
+    }
+})
+
+
 router.get('/user/posts', async (req, res) => {
     try {
         const userId = parseInt(req.session.user.user_id); 
         const posts = await prisma.post.findMany({
             where: {
                 creator_id: userId
-            }, 
+            },  
+            include: {creator: true}
         }); 
         res.json(posts)
     } catch (error) {
@@ -25,9 +58,30 @@ router.get('/user/posts', async (req, res) => {
     }
 })
 
+router.get('/homepage/posts', async (req, res) => {
+    try {
+        const userId = parseInt(req.session.user.user_id); 
+        const homepagePosts = await prisma.post.findMany({
+            where: {
+                creator_id: {
+                    not: userId
+                }
+            },
+            include: {creator: true}
+        });
+        res.json(homepagePosts)
+    } catch (error) {
+        res.status(500).send('Server error')
+    }
+})
+
+
 router.post('/posts', isAuthenticated, async (req, res) => {
     try {
         const { title, category, description, urgency, status, volunteer_id } = req.body
+        console.log("HERER")
+        const creator_id = req.session.user.user_id
+        console.log(creator_id)
         const newPost = await prisma.post.create({
             data: {
             title, 
@@ -35,7 +89,7 @@ router.post('/posts', isAuthenticated, async (req, res) => {
             description, 
             urgency, 
             status, 
-            creator_id: req.session.user.user_id, 
+            creator_id: creator_id,
             volunteer_id
             }
         })
