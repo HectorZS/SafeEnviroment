@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 export default function SignupForm() {
     const [formData, setFormData] = useState({ email: "", username: "", password: "", address: ""})
     const { setUser } = useUser()
+    const [message, setMessage] = useState("")
 
     function handleChange(event) {
         const { name, value } = event.target;
@@ -32,12 +33,11 @@ export default function SignupForm() {
             });
 
             const data = await response.json();
-
             if (response.ok) {
                 setUser(data); // Store user session in context
                 window.location.href = "/profilecenter"; // Redirect to homepage
             } else {
-                console.error("Signup failed:", data.error);
+                alert(data.error)
             }
         } catch (error) {
             console.error("Network error:", error);

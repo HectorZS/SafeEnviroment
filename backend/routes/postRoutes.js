@@ -14,7 +14,7 @@ const isAuthenticated = (req, res, next) => {
 // Search query
 
 router.get('/posts/search/:query/:urgency/:category/:userId', async (req, res) => {
-    const userId = parseInt(req.params.userId)
+    const userId = (req.params.userId)
     const title = req.params.query
     const urgency = req.params.urgency
     const category = req.params.category
@@ -36,7 +36,7 @@ router.get('/posts/search/:query/:urgency/:category/:userId', async (req, res) =
         }
         const posts = await prisma.post.findMany({
             where: {
-                creator_id: {not: userId},
+                creator: { username: {not: userId} }, 
                 title: titleBool ? {contains: title} : {}, 
                 urgency: urgencyBool ? {contains: urgency} : {}, 
                 category: categoryBool ? {contains: category} : {}, 
@@ -59,7 +59,7 @@ router.get('/posts/search/:query/:urgency/:category/:userId', async (req, res) =
 router.get('/posts/filterby/:query/:category/:userId', async (req, res) => {
     const urgency = req.params.query
     const category = req.params.category
-    const userId = parseInt(req.params.userId)
+    const userId = String(req.params.userId)
     let urgencyBool = true
     let categoryBool = true
     if (!urgency) {
@@ -73,7 +73,7 @@ router.get('/posts/filterby/:query/:category/:userId', async (req, res) => {
             categoryBool = false
         }
         const where = {
-            creator_id: {not: userId},
+            creator: {username: {not: userId} },
         ...(urgencyBool ? { urgency: { contains: urgency } } : {}),
         ...(categoryBool ? { category: {contains: category} }: {}), 
         };
@@ -101,7 +101,10 @@ router.get('/user/posts', async (req, res) => {
             where: {
                 creator_id: userId
             },  
-            include: {creator: true}
+            include: {creator: true},
+            orderBy: {
+                created_at: 'desc',
+            }, 
         }); 
         res.json(posts)
     } catch (error) {
@@ -120,7 +123,10 @@ router.get('/homepage/posts', async (req, res) => {
                     not: userId
                 }
             },
-            include: {creator: true}
+            include: {creator: true}, 
+            orderBy: {
+                created_at: 'desc',
+            }, 
         });
         res.json(homepagePosts)
     } catch (error) {

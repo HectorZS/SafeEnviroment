@@ -34,8 +34,13 @@ router.post('/signup', async(req, res) => {
         if (existingUser) {
             return res.status(400).json({error: "Username already exists"})
         }
-
+        try {
         coordinates = await getCoordsForAdress(address)
+
+        } catch (error) {
+            return res.status(500).json({error: "Invalid location"})
+        }
+        
         lat = coordinates.lat
         lng = coordinates.lng
 
@@ -54,7 +59,7 @@ router.post('/signup', async(req, res) => {
         res.status(201).json({message: "Signup succesfull"})
     } catch (error) {
     console.error(error)
-    res.status(500).json({error: "Something went wrong"})
+    res.status(500).json({error})
     }
 })
 
@@ -65,7 +70,7 @@ router.post("/login", async(req, res) => {
             return res.status(400).json({error: "You left some field in blank, all the fields should be filled out"})
         }
         const user = await prisma.user.findUnique({
-            where: {email}
+            where: {email, username}
         })
         if(!user){
             return res.status(401).json({error: "Invalid username or password"})
@@ -74,7 +79,7 @@ router.post("/login", async(req, res) => {
         const isValidPsswd = await bcrypt.compare(password, user.password)
 
         if(!isValidPsswd) {
-            return res.status(401).json({error: "Invalid username or password"})
+            return res.status(401).send({error: "Invalid username or password"})
         }
         req.session.user = user
         res.json(user)

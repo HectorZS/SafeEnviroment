@@ -19,7 +19,7 @@ export default function Navbar(){
         <div>
             <div className='navBarBody'>
                 <div className='leftNavBar'>
-                    <h4 onClick={() => {navigate('/homepage')}}>Home page</h4>
+                    <h4 onClick={() => {navigate('/homepage')}}>Homepage</h4>
                     <h4 onClick={() => {navigate('/profilecenter')}}>Profile center</h4>
                     <h4 onClick={() => {navigate('/create-post')}}>Create post</h4>
                 </div>

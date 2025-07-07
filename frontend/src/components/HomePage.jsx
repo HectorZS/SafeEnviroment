@@ -3,6 +3,7 @@ import Navbar from './Navbar'
 import Post from './Post.jsx'
 import { useEffect, useState } from 'react'
 import { useUser } from '../context/UserContext.jsx'
+import { use } from 'react'
 
 
 
@@ -13,6 +14,7 @@ export default function HomePage(){
     const [urgencyQuery, setUrgencyQuery] = useState('nourgency')
     const [categoryQuery, setCategoryQuery] = useState('nocategory')
     const isHome = true
+    console.log("USER: ", user)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -20,7 +22,6 @@ export default function HomePage(){
             .then(response => response.json())
             .then(data => {
                 setPosts(data)
-                console.log(data)
             })
             .catch(error => console.error('Error fetching posts:', error))
         };
@@ -29,15 +30,11 @@ export default function HomePage(){
 
     const handleSearch = async (e) => {
         e.preventDefault()
-        console.log("search: ", search)
-        console.log("USER: ", user.user_id)
-        console.log("Urgency query: ", urgencyQuery)
         if (!search) return;
         try {
             const response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${user.user_id}`);
             const data = await response.json();
             setPosts(data);
-            console.log(data)
         } catch (error) {
         console.error('Search error:', error);
         }
@@ -47,13 +44,11 @@ export default function HomePage(){
     const handleSelect = async (e) => {
         e.preventDefault()
         setUrgencyQuery(e.target.value)
-        console.log("USER FE: ", user.user_id)
         setSearch(''); // Clear search input
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${user.user_id}`);
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${user.username}`);
             const data = await response.json();
             setPosts(data);
-            console.log(data)
         } catch (error) {
             console.error("Filter error", error); 
         }
@@ -62,16 +57,32 @@ export default function HomePage(){
     const handleSelectCategory = async (e) => {
         e.preventDefault()
         setCategoryQuery(e.target.value)
-        console.log("USER FE: ", user.user_id)
         setSearch(''); // Clear search input
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${user.user_id}`);
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${user.username}`);
             const data = await response.json();
             setPosts(data);
-            console.log(data)
         } catch (error) {
             console.error("Filter error", error); 
         }
+    }
+
+    const handleClear = async (e) => {
+        e.preventDefault()
+        setSearch(''); // Clear search input
+        setCategoryQuery('nocategory')
+        setUrgencyQuery('nourgency')
+         try {
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/nourgency/nocategory/${user.username}`);
+            const data = await response.json();
+            setPosts(data);
+        } catch (error) {
+            console.error("Filter error", error); 
+        }
+    }
+
+    const handleOnContact = (username) => {
+        console.log("Hello, ", username)
     }
     
     const loadCurrentPosts = () => {
@@ -87,6 +98,7 @@ export default function HomePage(){
                     urgency={post.urgency}
                     status={post.status}
                     onDelete={() => handleOnDelete(post.post_id)}
+                    onContact={() => handleOnContact(post.creator.username)}
                     isHome={isHome}
                 />                    
             </div>
@@ -108,7 +120,7 @@ export default function HomePage(){
                     style={{ width: '135px' }}
                 />
                 <button type="submit" onClick={handleSearch}>Search</button>
-
+                <button type="sumbit" onClick={handleClear}>Clear filter fields</button>
             </form>
             <div className='categoryButtons'>
                 <select

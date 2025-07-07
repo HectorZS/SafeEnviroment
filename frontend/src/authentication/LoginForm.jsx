@@ -39,7 +39,7 @@ const LoginForm = () => {
                 setUser(data); // Set the user in context with id and username
                 navigate("/profilecenter"); // Redirect to the homepage
             } else {
-                setMessage({ type: "error", text: data.error || "Login failed." });
+                alert(data.error)
             }
         } catch (error) {
             setMessage({ type: "error", text: "Network error. Please try again." });

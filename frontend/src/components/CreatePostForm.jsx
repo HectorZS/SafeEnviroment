@@ -31,7 +31,6 @@ export default function CreatePostForm(){
             const data = await response.json();
 
             if (response.ok) {
-                console.log("Post added successfully");
                 navigate("/profilecenter"); // Redirect to the homepage
             } else {
                 console.error("Failed to add post:", data.error);
