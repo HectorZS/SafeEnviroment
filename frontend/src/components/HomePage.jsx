@@ -9,9 +9,9 @@ import { useUser } from '../context/UserContext.jsx'
 export default function HomePage(){
     const { user, setUser } = useUser()
     const [posts, setPosts] = useState([])
-    const [filteredPosts, setFilteredPosts] = useState([])
     const [search, setSearch] = useState('')
-    const [urgencyQuery, setUrgencyQuery] = useState('')
+    const [urgencyQuery, setUrgencyQuery] = useState('nourgency')
+    const [categoryQuery, setCategoryQuery] = useState('nocategory')
     const isHome = true
 
     useEffect(() => {
@@ -20,7 +20,7 @@ export default function HomePage(){
             .then(response => response.json())
             .then(data => {
                 setPosts(data)
-                // console.log(data)
+                console.log(data)
             })
             .catch(error => console.error('Error fetching posts:', error))
         };
@@ -29,25 +29,49 @@ export default function HomePage(){
 
     const handleSearch = async (e) => {
         e.preventDefault()
-        console.log("HS")
-
+        console.log("search: ", search)
+        console.log("USER: ", user.user_id)
+        console.log("Urgency query: ", urgencyQuery)
         if (!search) return;
         try {
-            console.log("HERE")
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}`);
-            console.log("ERE")
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${user.user_id}`);
             const data = await response.json();
-            // setPosts(data);
-
+            setPosts(data);
             console.log(data)
         } catch (error) {
         console.error('Search error:', error);
         }
     };
 
-    const handleSelect = (e) => {
-        e.preventDefault(); 
-        filteredPosts.filter(post => post.urgency === urgencyQuery)
+
+    const handleSelect = async (e) => {
+        e.preventDefault()
+        setUrgencyQuery(e.target.value)
+        console.log("USER FE: ", user.user_id)
+        setSearch(''); // Clear search input
+        try {
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${user.user_id}`);
+            const data = await response.json();
+            setPosts(data);
+            console.log(data)
+        } catch (error) {
+            console.error("Filter error", error); 
+        }
+    }
+
+    const handleSelectCategory = async (e) => {
+        e.preventDefault()
+        setCategoryQuery(e.target.value)
+        console.log("USER FE: ", user.user_id)
+        setSearch(''); // Clear search input
+        try {
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${user.user_id}`);
+            const data = await response.json();
+            setPosts(data);
+            console.log(data)
+        } catch (error) {
+            console.error("Filter error", error); 
+        }
     }
     
     const loadCurrentPosts = () => {
@@ -75,28 +99,41 @@ export default function HomePage(){
         <Navbar/>
         <main>
             <form style={{ display: 'inline-block', marginBottom: '1rem' }}>
-            <input 
-                className="searchVar" 
-                type="text" 
-                placeholder='Search posts' 
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                // onKeyDown={(e) => { if (e.key === "Enter") handleSearch(e); }}
-                style={{ width: '135px' }}
-            />
-            <button type="submit" onClick={handleSearch}>Search</button>
+                <input 
+                    className="searchVar" 
+                    type="text" 
+                    placeholder='Search posts' 
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    style={{ width: '135px' }}
+                />
+                <button type="submit" onClick={handleSearch}>Search</button>
+
             </form>
             <div className='categoryButtons'>
-            <select
+                <select
                     id="category"
                     name="category"
                     value={urgencyQuery}
-                    onChange={(event) => {setUrgencyQuery(event.target.value)}}
+                    onChange={handleSelect}
                 >
-                    <option value="">Urgency level</option>
+                    <option value="nourgency">Urgency level</option>
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
                     <option value="high">High</option>
+                </select>
+                <select
+                    id="category"
+                    name="category"
+                    value={categoryQuery}
+                    onChange={handleSelectCategory}
+                >
+                    <option value="nocategory">Category</option>
+                    <option value="Tool & Equipment Lending">Tool & Equipment Lending</option>
+                    <option value="Pet Care">Pet Care</option>
+                    <option value="Errands & Assistance">Errands & Assistance</option>
+                    <option value="Home & Yard Help">Home & Yard Help</option>
+                    <option value="Social & Community Engagement">Social & Community Engagement</option>
                 </select>
             </div>
             <div className='postsHomePage'>

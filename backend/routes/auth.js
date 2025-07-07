@@ -95,7 +95,6 @@ router.get("/me", async (req, res) => {
         }); 
         res.json({ id: req.session.user.user_id, username: user.username, latitude: req.session.user.latitude, longitude: req.session.user.longitude})
     } catch (error) {
-        console.log("ERROR in /me")
         res.status(401).json({ message: "not logged in" })
     }
 })

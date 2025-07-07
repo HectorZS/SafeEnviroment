@@ -11,37 +11,88 @@ const isAuthenticated = (req, res, next) => {
     next();
 };
 
+// Search query
 
-router.get('/posts/search/:query', async (req, res) => {
-    console.log("here")
+router.get('/posts/search/:query/:urgency/:category/:userId', async (req, res) => {
+    const userId = parseInt(req.params.userId)
     const title = req.params.query
-    if (!title) {
+    const urgency = req.params.urgency
+    const category = req.params.category
+    let urgencyBool = true
+    let categoryBool = true
+    let titleBool = true
+    if (!title || !urgency || !category) {
         return res.status(400).json({ error: 'Missing query parameter'})
     }
     try {
+        if(urgency === "nourgency") {
+            urgencyBool = false
+        }
+        if(category === "nocategory") {
+            categoryBool = false
+        }
+        if(title === "notitle") {
+            titleBool = false; 
+        }
         const posts = await prisma.post.findMany({
             where: {
-                // creator_id: {
-                //     not: req.session.user.user_id
-                // },
-                title: {
-                    contains: title, 
-                    // mode: 'insensitive', 
-                },
-            }, 
+                creator_id: {not: userId},
+                title: titleBool ? {contains: title} : {}, 
+                urgency: urgencyBool ? {contains: urgency} : {}, 
+                category: categoryBool ? {contains: category} : {}, 
+            },
+            include: {creator: true},
             orderBy: {
                 created_at: 'desc',
             }, 
             take: 10,
         })
         res.json(posts);
-        console.log(posts)
     } catch (error) {
         console.error("Error searching posts: ", error); 
+        res.status(500).json({ error: 'Server error' })
+    }   
+})
+
+// FILTER QUERY
+
+router.get('/posts/filterby/:query/:category/:userId', async (req, res) => {
+    const urgency = req.params.query
+    const category = req.params.category
+    const userId = parseInt(req.params.userId)
+    let urgencyBool = true
+    let categoryBool = true
+    if (!urgency) {
+        return res.status(400).json({ error: 'Missing query parameter'})
+    }
+    try {
+        if(urgency === "nourgency") {
+            urgencyBool = false
+        }
+        if(category === "nocategory") {
+            categoryBool = false
+        }
+        const where = {
+            creator_id: {not: userId},
+        ...(urgencyBool ? { urgency: { contains: urgency } } : {}),
+        ...(categoryBool ? { category: {contains: category} }: {}), 
+        };
+        const posts = await prisma.post.findMany({
+            where,
+            include: {creator: true},
+            orderBy: {
+                created_at: 'desc',
+            }, 
+        })
+        res.json(posts);
+    } catch (error) {
+        console.error("Error filtering posts: ", error); 
         res.status(500).json({ error: 'Server error' })
     }
 })
 
+
+// OWN POSTS QUERY
 
 router.get('/user/posts', async (req, res) => {
     try {
@@ -57,6 +108,8 @@ router.get('/user/posts', async (req, res) => {
         res.status(500).send('Server error')
     }
 })
+
+// HOMEPAGE POSTS
 
 router.get('/homepage/posts', async (req, res) => {
     try {
@@ -75,13 +128,12 @@ router.get('/homepage/posts', async (req, res) => {
     }
 })
 
+// CREATE POST
 
 router.post('/posts', isAuthenticated, async (req, res) => {
     try {
         const { title, category, description, urgency, status, volunteer_id } = req.body
-        console.log("HERER")
         const creator_id = req.session.user.user_id
-        console.log(creator_id)
         const newPost = await prisma.post.create({
             data: {
             title, 
