@@ -1,6 +1,6 @@
 import './Post.css'
 
-export default function Post({ creator, title, category, description, urgency, status, onDelete }){
+export default function Post({ creator, title, category, description, urgency, status, onDelete, onContact, isHome }){
     return (
         <div className='post'>
             <div className='data'>
@@ -21,7 +21,13 @@ export default function Post({ creator, title, category, description, urgency, s
                 </div>
             </div>
             <div className='buttons'>
-                <button className="delete-button" onClick={onDelete}>Delete</button>
+                {!isHome && <button className="delete-button" onClick={onDelete}>Delete</button>}
+                {isHome && 
+                <div>
+                    <button className="contact-button" onClick={onContact}>Contact user</button>
+                    <button className="contact-button" onClick={onContact}>View task details</button>
+                </div>
+                }
             </div>
         </div>  
     )

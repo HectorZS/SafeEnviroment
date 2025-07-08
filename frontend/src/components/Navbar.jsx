@@ -19,15 +19,16 @@ export default function Navbar(){
         <div>
             <div className='navBarBody'>
                 <div className='leftNavBar'>
-                    <Link to='/create-post' className='logo'>
-                        Create post
-                    </Link>
+                    <h4 onClick={() => {navigate('/homepage')}}>Homepage</h4>
+                    <h4 onClick={() => {navigate('/profilecenter')}}>Profile center</h4>
+                    <h4 onClick={() => {navigate('/create-post')}}>Create post</h4>
                 </div>
                 <h2 className='centerNavBar'>
                     {user ? `Welcome, ${user.username}` : 'Loading...'}
                 </h2>
                 <div className='rightNavBar'>
                     <div className='navigationLinks'>
+
                         <button onClick={handleLogout}>Log Out</button>
                     </div>
                 </div>

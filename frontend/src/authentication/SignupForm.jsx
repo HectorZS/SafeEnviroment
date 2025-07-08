@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 export default function SignupForm() {
     const [formData, setFormData] = useState({ email: "", username: "", password: "", address: ""})
     const { setUser } = useUser()
+    const [message, setMessage] = useState("")
 
     function handleChange(event) {
         const { name, value } = event.target;
@@ -32,12 +33,11 @@ export default function SignupForm() {
             });
 
             const data = await response.json();
-
             if (response.ok) {
                 setUser(data); // Store user session in context
                 window.location.href = "/profilecenter"; // Redirect to homepage
             } else {
-                console.error("Signup failed:", data.error);
+                alert(data.error)
             }
         } catch (error) {
             console.error("Network error:", error);
@@ -51,13 +51,13 @@ export default function SignupForm() {
             <div className='modalBodySignup'>
                 <h3>Sign up</h3>
                 <label>Email</label>
-                <input type="email" name="email" pattern=".+@example\.com" value={formData.email} onChange={handleChange}></input>
+                <input type="email"  placeholder='example@domain.com' name="email" pattern=".+@example\.com" value={formData.email} onChange={handleChange}></input>
                 <label>Username</label>
-                <input type="text" name="username" value={formData.username} onChange={handleChange}/>
+                <input type="text"  placeholder='Create username' name="username" value={formData.username} onChange={handleChange}/>
                 <label>Password</label>
-                <input type="password" name="password" value={formData.password} onChange={handleChange}/>
+                <input type="password"  placeholder='8 characters minimum' name="password" value={formData.password} onChange={handleChange}/>
                 <label>Address</label>
-                <input type="address" name="address" value={formData.address} onChange={handleChange}/>
+                <input type="address"  placeholder='# st adress, City' name="address" value={formData.address} onChange={handleChange}/>
                 <button className='submit' onClick={handleSubmit}>Sign up</button>
                 <div className="loginlink">
                     <p>Already have an account? </p>

@@ -16,6 +16,7 @@ export default function InitialPage(){
             .then(response => response.json())
             .then(data => {
                 setPosts(data)
+                console.log(data)
             })
             .catch(error => console.error('Error fetching posts:', error))
         };
@@ -42,10 +43,11 @@ export default function InitialPage(){
     const loadCurrentPosts = () => {
         return posts.map((post) => (
             <div className='postOverview'>
+                {console.log(post.creator_id)}
                 <Post
                     key={post.post_id}
                     postId={post.post_id}
-                    creator={user.username}
+                    creator={post.creator.username}
                     title={post.title}
                     category={post.category}
                     description={post.description}

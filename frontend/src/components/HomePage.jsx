@@ -1,0 +1,157 @@
+import './HomePage.css'
+import Navbar from './Navbar'
+import Post from './Post.jsx'
+import { useEffect, useState } from 'react'
+import { useUser } from '../context/UserContext.jsx'
+import { use } from 'react'
+
+
+
+export default function HomePage(){
+    const { user, setUser } = useUser()
+    const [posts, setPosts] = useState([])
+    const [search, setSearch] = useState('')
+    const [urgencyQuery, setUrgencyQuery] = useState('nourgency')
+    const [categoryQuery, setCategoryQuery] = useState('nocategory')
+    const isHome = true
+    console.log("USER: ", user)
+
+    useEffect(() => {
+        const fetchData = async () => {
+            fetch(`${import.meta.env.VITE_URL}/homepage/posts`, { credentials: "include" })
+            .then(response => response.json())
+            .then(data => {
+                setPosts(data)
+            })
+            .catch(error => console.error('Error fetching posts:', error))
+        };
+        fetchData();
+    }, []);
+
+    const handleSearch = async (e) => {
+        e.preventDefault()
+        if (!search) return;
+        try {
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${user.user_id}`);
+            const data = await response.json();
+            setPosts(data);
+        } catch (error) {
+        console.error('Search error:', error);
+        }
+    };
+
+
+    const handleSelect = async (e) => {
+        e.preventDefault()
+        setUrgencyQuery(e.target.value)
+        setSearch(''); // Clear search input
+        try {
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${user.username}`);
+            const data = await response.json();
+            setPosts(data);
+        } catch (error) {
+            console.error("Filter error", error); 
+        }
+    }
+
+    const handleSelectCategory = async (e) => {
+        e.preventDefault()
+        setCategoryQuery(e.target.value)
+        setSearch(''); // Clear search input
+        try {
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${user.username}`);
+            const data = await response.json();
+            setPosts(data);
+        } catch (error) {
+            console.error("Filter error", error); 
+        }
+    }
+
+    const handleClear = async (e) => {
+        e.preventDefault()
+        setSearch(''); // Clear search input
+        setCategoryQuery('nocategory')
+        setUrgencyQuery('nourgency')
+         try {
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/nourgency/nocategory/${user.username}`);
+            const data = await response.json();
+            setPosts(data);
+        } catch (error) {
+            console.error("Filter error", error); 
+        }
+    }
+
+    const handleOnContact = (username) => {
+        console.log("Hello, ", username)
+    }
+    
+    const loadCurrentPosts = () => {
+        return posts.map((post) => (
+            <div className='postOverview'>
+                <Post
+                    key={post.post_id}
+                    postId={post.post_id}
+                    creator={post.creator.username}
+                    title={post.title}
+                    category={post.category}
+                    description={post.description}
+                    urgency={post.urgency}
+                    status={post.status}
+                    onDelete={() => handleOnDelete(post.post_id)}
+                    onContact={() => handleOnContact(post.creator.username)}
+                    isHome={isHome}
+                />                    
+            </div>
+        ));
+    };
+
+
+    return (
+       <div className='homePage'>
+        <Navbar/>
+        <main>
+            <form style={{ display: 'inline-block', marginBottom: '1rem' }}>
+                <input 
+                    className="searchVar" 
+                    type="text" 
+                    placeholder='Search posts' 
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    style={{ width: '135px' }}
+                />
+                <button type="submit" onClick={handleSearch}>Search</button>
+                <button type="sumbit" onClick={handleClear}>Clear filter fields</button>
+            </form>
+            <div className='categoryButtons'>
+                <select
+                    id="category"
+                    name="category"
+                    value={urgencyQuery}
+                    onChange={handleSelect}
+                >
+                    <option value="nourgency">Urgency level</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+                <select
+                    id="category"
+                    name="category"
+                    value={categoryQuery}
+                    onChange={handleSelectCategory}
+                >
+                    <option value="nocategory">Category</option>
+                    <option value="Tool & Equipment Lending">Tool & Equipment Lending</option>
+                    <option value="Pet Care">Pet Care</option>
+                    <option value="Errands & Assistance">Errands & Assistance</option>
+                    <option value="Home & Yard Help">Home & Yard Help</option>
+                    <option value="Social & Community Engagement">Social & Community Engagement</option>
+                </select>
+            </div>
+            <div className='postsHomePage'>
+                {posts && user ? loadCurrentPosts() : "Loading..."}
+            </div>
+        </main>
+        </div>
+    )
+}

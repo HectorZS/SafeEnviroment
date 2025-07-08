@@ -31,7 +31,6 @@ export default function CreatePostForm(){
             const data = await response.json();
 
             if (response.ok) {
-                console.log("Post added successfully");
                 navigate("/profilecenter"); // Redirect to the homepage
             } else {
                 console.error("Failed to add post:", data.error);
@@ -75,9 +74,9 @@ export default function CreatePostForm(){
                     onChange={handleChange}
                 >
                     <option value="">Urgency</option>
-                    <option value="High">High</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Low">Low</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
                 </select>
                 <button className='submit' onClick={handleSubmit}>Create post</button>
             </div>
