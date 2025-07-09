@@ -9,22 +9,27 @@ import { useNavigate } from 'react-router-dom'
 export default function ChatRoom(){
     const [chat, setChat] = useState([])
     const [message, setMessage] = useState('')
-    const { userOneId, userTwoId } = useParams()
+    // const { userOneId, userTwoId } = useParams()
+    const { chatroomId } = useParams()
     const { user, setUser } = useUser()
     let navigate = useNavigate()
     
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`${import.meta.env.VITE_URL}/chatroom/${userOneId}/chat/${userTwoId}`, { credentials: "include" })
+                // console.log("chatroom: ", chatroomId)
+                // const response = await fetch(`${import.meta.env.VITE_URL}/chatroom/${userOneId}/chat/${userTwoId}`, { credentials: "include" })
+                const response = await fetch(`${import.meta.env.VITE_URL}/chatrooms/${chatroomId}`, { credentials: "include" })
                 const data = await response.json()
                 setChat(data)
+                // console.log("data: ", data)
             } catch (error) {
                 console.error('Error:', error);
             }
         };
         fetchData();
     }, []);
+
 
     const loadMessages = () => {
         return chat[0].messages.map((message) => (
@@ -55,23 +60,30 @@ export default function ChatRoom(){
             <div>
                 <HiArrowCircleLeft style={{ fontSize: '2rem', color: 'black', marginLeft: '25px', width: '3vw', height: '3vw', display: "block"}} onClick={() => {navigate('/homepage')}}/>
             </div>
-            {
-                chat[0] && user &&
-                <div>
-                    <h2>Chat between {chat[0].userOne.username} and {chat[0].userTwo.username}</h2>
-                    <div>{loadMessages()}</div>
+            <div className='chatRoom-center'>
+                <div className='leftSide'>
+                    {/* {loadChats()} */}
                 </div>
-            }
-            <form style={{ display: 'inline-block', marginBottom: '1rem' }}>
-            <input 
-                className="searchVar" 
-                type="text" 
-                placeholder='Type something' 
-                onChange={(e) => setMessage(e.target.value)}
-                style={{ width: '135px' }}
-            />
-            <button type="submit" onClick={handleSend}>Send</button>
-            </form>
+                <div className='rightSide'>
+                    {
+                        chat[0] && user &&
+                        <div>
+                            <h2>Chat between {chat[0].userOne.username} and {chat[0].userTwo.username}</h2>
+                            <div>{loadMessages()}</div>
+                        </div>
+                    }
+                    <form style={{ display: 'inline-block', marginBottom: '1rem' }}>
+                    <input 
+                        className="searchVar" 
+                        type="text" 
+                        placeholder='Type something' 
+                        onChange={(e) => setMessage(e.target.value)}
+                        style={{ width: '135px' }}
+                    />
+                    <button type="submit" onClick={handleSend}>Send</button>
+                    </form>
+                </div>
+            </div>
         </div>
     )
 }

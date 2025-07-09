@@ -40,6 +40,9 @@ router.get('/posts/search/:query/:urgency/:category/:userId', async (req, res) =
                 title: titleBool ? {contains: title} : {}, 
                 urgency: urgencyBool ? {contains: urgency} : {}, 
                 category: categoryBool ? {contains: category} : {}, 
+                status: {
+                    not: "completed"
+                }
             },
             include: {creator: true},
             orderBy: {
@@ -76,6 +79,9 @@ router.get('/posts/filterby/:query/:category/:userId', async (req, res) => {
             creator: {username: {not: userId} },
         ...(urgencyBool ? { urgency: { contains: urgency } } : {}),
         ...(categoryBool ? { category: {contains: category} }: {}), 
+        status: {
+            not: "completed"
+        }
         };
         const posts = await prisma.post.findMany({
             where,
@@ -121,6 +127,9 @@ router.get('/homepage/posts', async (req, res) => {
             where: {
                 creator_id: {
                     not: userId
+                },
+                status: {
+                    not: "completed"
                 }
             },
             include: {creator: true}, 
@@ -131,6 +140,63 @@ router.get('/homepage/posts', async (req, res) => {
         res.json(homepagePosts)
     } catch (error) {
         res.status(500).send('Server error')
+    }
+})
+
+// SEARCH USERS
+router.get('/users/search/:query', async (req, res) => {
+    try {
+        const query = req.params.query
+        const users = await prisma.user.findMany({
+            where: {
+                OR: [
+                    { username: { contains: query, not: req.session.user.username } }, 
+                    { email: { contains: query, not: req.session.user.email} }
+                ]
+            }, 
+            select: {
+                user_id: true, 
+                username: true, 
+                email: true
+            }, 
+            take: 5
+        })
+        res.json(users)
+    } catch (error) {
+        console.error("Error searching users: ", error)
+        res.status(500).json({ error: "Server error" })
+    }
+})
+
+// UPDATE STATUS OF POSTS
+router.put('/posts/:id/complete', isAuthenticated, async (req, res) => {
+    try {
+        const postId = parseInt(req.params.id)
+        const { volunteer_id } = req.body
+
+        const post = await prisma.post.findUnique({
+            where: {post_id: postId}
+        })
+
+        if(!post) {
+            return res.status(404).json({error: "Post not found"})
+        }
+
+        const updatedPost = await prisma.post.update({
+            where: {post_id: postId}, 
+            data: {
+                status: "completed", 
+                volunteer_id: volunteer_id
+            }, 
+            include: {
+                creator: true,
+                volunteer: true
+            }
+        })
+        res.json(updatedPost)
+    } catch (error) {
+        console.error("Error updating post status: ", error)
+        res.status(500).json({ error: "Failed to update post status" })
     }
 })
 

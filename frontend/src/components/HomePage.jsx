@@ -31,7 +31,7 @@ export default function HomePage(){
         e.preventDefault()
         if (!search) return;
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${user.user_id}`);
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${user.username}`);
             const data = await response.json();
             setPosts(data);
         } catch (error) {
@@ -84,7 +84,8 @@ export default function HomePage(){
         try {
             const response = await fetch(`${import.meta.env.VITE_URL}/chatroom/${username}/chat/${user.user_id}`, { credentials: "include" })
             const data = await response.json()
-        
+            // console.log(data[0].chat_id)
+            let chatroomId; 
             const isEmpty = !data || (Array.isArray(data) && data.length === 0) || (Object.keys(data).length === 0)
 
             if (isEmpty) {
@@ -94,10 +95,16 @@ export default function HomePage(){
                     body: JSON.stringify({ userOneId: username, userTwoId: user.user_id }),
                     credentials: "include",
                 })
+                const postData = await postResponse.json()
+                chatroomId = postData.chat_id
+                console.log("Response: ", chatroomId)
             } else {
-                console.log("Chat data found")
+                chatroomId = data[0].chat_id
+                console.log("Chat data found: ", data.chat_id)
             }
-            navigate(`/chatroom/${user.user_id}/chat/${username}`)
+            console.log("FIN: ", chatroomId)
+            // navigate(`/chatroom/${user.user_id}/chat/${username}`)
+            navigate(`/chatroom/${chatroomId}`)
         } catch (error) {
             console.error('Error:', error)
         }

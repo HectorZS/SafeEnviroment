@@ -16,7 +16,8 @@ function App() {
           <Route path="/profilecenter" element={<InitialPage/>}/>
           <Route path="/create-post" element={<CreatePostForm/>}/>
           <Route path="/homepage" element={<HomePage/>}/>
-          <Route path="/chatroom/:userOneId/chat/:userTwoId" element={<ChatRoom/>}/>
+          {/* <Route path="/chatroom/:userOneId/chat/:userTwoId" element={<ChatRoom/>}/> */}
+          <Route path="/chatroom/:chatroomId" element={<ChatRoom/>}/>
         </Routes>
       </Router>
   )

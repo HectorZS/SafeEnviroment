@@ -1,6 +1,21 @@
 import './Post.css'
+import { useState } from 'react'
+import VolunteerModal from './VolunteerModal'
 
-export default function Post({ creator, title, category, description, urgency, status, onDelete, onContact, isHome }){
+export default function Post({ creator, title, category, description, urgency, status, onDelete, onContact, isHome, onComplete, postId}){
+    const [showVolunteerModal, setShowVolunteerModal] = useState(false)
+
+    const handleOnCompleteClick = () => {
+        setShowVolunteerModal(true)
+    }
+
+
+
+    const handleCompleteWithVolunteer = (postId, volunteerId) => {
+        onComplete(postId, volunteerId)
+        setShowVolunteerModal(false)
+    }
+
     return (
         <div className='post'>
             <div className='data'>
@@ -13,6 +28,9 @@ export default function Post({ creator, title, category, description, urgency, s
                 <div className='urgency'>
                     Urgency: {urgency}
                 </div>
+                 <div className='status'>
+                    Status: {status || 'Pending'}
+                </div>
                 <div className='category'>
                     {category}
                 </div>
@@ -21,14 +39,28 @@ export default function Post({ creator, title, category, description, urgency, s
                 </div>
             </div>
             <div className='buttons'>
-                {!isHome && <button className="delete-button" onClick={onDelete}>Delete</button>}
+                {!isHome && (
+                    <>
+                        <button className="delete-button" onClick={onDelete}>Delete</button>
+                        {status !== 'completed' && (
+                            <button className='complete-button' onClick={handleOnCompleteClick}>Mark as completed</button>
+                        )}
+                    </>
+                    )}
                 {isHome && 
                 <div>
                     <button className="contact-button" onClick={onContact}>Contact user</button>
-                    <button className="contact-button" onClick={onContact}>View task details</button>
+                    <button className="contact-button">View task details</button>
                 </div>
                 }
             </div>
+            {showVolunteerModal && (
+                <VolunteerModal
+                    postId={postId}
+                    onComplete={handleCompleteWithVolunteer}
+                    onClose={() => setShowVolunteerModal(false)}
+                />
+            )}
         </div>  
     )
 }

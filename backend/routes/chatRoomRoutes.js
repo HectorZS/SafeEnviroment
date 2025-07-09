@@ -6,6 +6,7 @@ const prisma = new PrismaClient()
 const router = express.Router()
 
 // Get a particular chatroom from two users
+
 router.get('/chatroom/:userOneId/chat/:userTwoId', isAuthenticated, async (req, res) => {
     try {
         const userOneId = parseInt(req.params.userOneId); 
@@ -35,8 +36,30 @@ router.get('/chatroom/:userOneId/chat/:userTwoId', isAuthenticated, async (req, 
     }
 })
 
+router.get('/chatrooms/:chatroomId', isAuthenticated, async (req, res) => {
+    try {
+        const chatroomId = parseInt(req.params.chatroomId);
+        const chat = await prisma.chat.findMany({
+            where: {
+                chat_id: chatroomId,
+            },
+            include: {
+                userOne: true,
+                userTwo: true,
+                messages: true,
+            },
+        });
+        if (!chat) {
+            return res.status(404).json({ error: "Chatroom not found" });
+        }
+        res.json(chat);
+    } catch (error) {
+        res.status(500).send("Server error")
+    }
+})
+
 // Get all the chatrooms of current user with the user id
-router.get('/chatroom/:id', isAuthenticated, async (req, res) => {
+router.get('/chatrooms/users/:userId', isAuthenticated, async (req, res) => {
     try {
         const user_id = parseInt(req.params.id); 
         const chats = await prisma.chat.findMany({

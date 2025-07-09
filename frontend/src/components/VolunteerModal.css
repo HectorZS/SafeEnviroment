@@ -1,0 +1,63 @@
+.modal-overlay {
+    position: fixed; 
+    top: 0; 
+    left: 0;
+    right: 0;
+    bottom: 0; 
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.volunteer-search-modal {
+    background: white;
+    padding: 20px; 
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+}
+
+.search-container {
+    display: flex;
+    gap: 10px; 
+    margin: 15px 0; 
+}
+
+.search-container input {
+    flex: 1; 
+    padding: 8px; 
+}
+
+.user-results {
+    max-height: 300px;
+    overflow-y: auto;
+    margin: 15px 0; 
+}
+
+.user-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px; 
+    border: 1px solid #ddd; 
+    margin-bottom: 5px; 
+    cursor: pointer;
+}
+
+.user-item:hover {
+    background: #f0f0f0;
+}
+
+.user-item.selected {
+    display: flex;
+    flex-direction: column;
+    background: #e0e0ff;
+    border-color: #a0a0ff
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px
+}

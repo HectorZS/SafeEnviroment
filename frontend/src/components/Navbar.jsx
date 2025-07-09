@@ -21,6 +21,7 @@ export default function Navbar(){
                     <h4 onClick={() => {navigate('/homepage')}}>Homepage</h4>
                     <h4 onClick={() => {navigate('/profilecenter')}}>Profile center</h4>
                     <h4 onClick={() => {navigate('/create-post')}}>Create post</h4>
+                    <h4 onClick={() => {navigate('/chats')}}>Messages</h4>
                 </div>
                 <h2 className='centerNavBar'>
                     {user ? `Welcome, ${user.username}` : 'Loading...'}
