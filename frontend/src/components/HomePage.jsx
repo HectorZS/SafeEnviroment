@@ -3,8 +3,7 @@ import Navbar from './Navbar'
 import Post from './Post.jsx'
 import { useEffect, useState } from 'react'
 import { useUser } from '../context/UserContext.jsx'
-import { use } from 'react'
-
+import { useNavigate } from "react-router-dom";
 
 
 export default function HomePage(){
@@ -14,7 +13,7 @@ export default function HomePage(){
     const [urgencyQuery, setUrgencyQuery] = useState('nourgency')
     const [categoryQuery, setCategoryQuery] = useState('nocategory')
     const isHome = true
-    console.log("USER: ", user)
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,7 +35,7 @@ export default function HomePage(){
             const data = await response.json();
             setPosts(data);
         } catch (error) {
-        console.error('Search error:', error);
+            console.error('Search error:', error);
         }
     };
 
@@ -81,8 +80,27 @@ export default function HomePage(){
         }
     }
 
-    const handleOnContact = (username) => {
-        console.log("Hello, ", username)
+    const handleOnContact = async (username) => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_URL}/chatroom/${username}/chat/${user.user_id}`, { credentials: "include" })
+            const data = await response.json()
+        
+            const isEmpty = !data || (Array.isArray(data) && data.length === 0) || (Object.keys(data).length === 0)
+
+            if (isEmpty) {
+                const postResponse = await fetch(`${import.meta.env.VITE_URL}/chatroom`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userOneId: username, userTwoId: user.user_id }),
+                    credentials: "include",
+                })
+            } else {
+                console.log("Chat data found")
+            }
+            navigate(`/chatroom/${user.user_id}/chat/${username}`)
+        } catch (error) {
+            console.error('Error:', error)
+        }
     }
     
     const loadCurrentPosts = () => {
@@ -98,7 +116,7 @@ export default function HomePage(){
                     urgency={post.urgency}
                     status={post.status}
                     onDelete={() => handleOnDelete(post.post_id)}
-                    onContact={() => handleOnContact(post.creator.username)}
+                    onContact={() => handleOnContact(post.creator.user_id)}
                     isHome={isHome}
                 />                    
             </div>

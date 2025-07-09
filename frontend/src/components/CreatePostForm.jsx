@@ -43,7 +43,7 @@ export default function CreatePostForm(){
    
     return (
         <div className='postForm'>
-            <HiArrowCircleLeft style={{ fontSize: '2rem', color: '#01959d', marginLeft: '25px', width: '3vw', height: '3vw', display: "block"}} onClick={() => {navigate('/profilecenter')}}/>
+            <HiArrowCircleLeft style={{ fontSize: '2rem', color: 'black', marginLeft: '25px', width: '3vw', height: '3vw', display: "block"}} onClick={() => {navigate('/profilecenter')}}/>
             <div className='titleForm'>
                 <h2>Create new post</h2>
             </div>

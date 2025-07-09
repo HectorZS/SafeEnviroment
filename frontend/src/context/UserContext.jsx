@@ -9,7 +9,7 @@ export const UserProvider = ({ children }) => {
         fetch(`${import.meta.env.VITE_URL}/me`, { credentials: "include" })
             .then((response) => response.json())
             .then((data) => {
-                if (data.id) {
+                if (data.user_id) {
                     setUser(data); // Persist login state
                 }
             });

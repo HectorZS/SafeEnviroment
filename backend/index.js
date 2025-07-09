@@ -8,10 +8,12 @@ const {createClient} = require("redis")
 const PORT = 3000
 const authRouter = require('./routes/auth')
 const postRouter = require('./routes/postRoutes')
+const chatroomRouter = require('./routes/chatRoomRoutes')
+const messagesRouter = require('./routes/messagesRoutes')
 app.use(express.json())
 
 const corsOptions = {
-    origin: ['http://localhost:5174', "https://safeenviroment-frontend.onrender.com"], 
+    origin: ['http://localhost:5173', "https://safeenviroment-frontend.onrender.com"], 
     credentials: true,
 }
 app.use(cors(corsOptions))
@@ -46,6 +48,8 @@ app.use(session(sessionConfig))
 app.set("trust proxy", 1)
 app.use(authRouter)
 app.use(postRouter)
+app.use(chatroomRouter)
+app.use(messagesRouter)
 app.get('/homepage', (req, res) => {
     res.send("Backend here"); 
 })

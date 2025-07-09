@@ -31,7 +31,7 @@ export default function InitialPage(){
         )
         .then(response => {
             if (!response.ok) {
-                throw new Error('Failed to delete the card')
+                throw new Error('Failed to delete the post')
             }
             setPosts(prevPosts => prevPosts.filter(post => post.post_id !== post_id));
         })
@@ -43,7 +43,6 @@ export default function InitialPage(){
     const loadCurrentPosts = () => {
         return posts.map((post) => (
             <div className='postOverview'>
-                {console.log(post.creator_id)}
                 <Post
                     key={post.post_id}
                     postId={post.post_id}
