@@ -36,6 +36,8 @@ router.get('/chatroom/:userOneId/chat/:userTwoId', isAuthenticated, async (req, 
     }
 })
 
+
+// getting chatroom data
 router.get('/chatrooms/:chatroomId', isAuthenticated, async (req, res) => {
     try {
         const chatroomId = parseInt(req.params.chatroomId);
