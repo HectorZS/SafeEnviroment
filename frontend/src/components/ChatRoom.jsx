@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom'
 export default function ChatRoom(){
     const [chat, setChat] = useState([])
     const [message, setMessage] = useState('')
-    // const { userOneId, userTwoId } = useParams()
     const { chatroomId } = useParams()
     const { user, setUser } = useUser()
     let navigate = useNavigate()
@@ -17,12 +16,9 @@ export default function ChatRoom(){
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // console.log("chatroom: ", chatroomId)
-                // const response = await fetch(`${import.meta.env.VITE_URL}/chatroom/${userOneId}/chat/${userTwoId}`, { credentials: "include" })
                 const response = await fetch(`${import.meta.env.VITE_URL}/chatrooms/${chatroomId}`, { credentials: "include" })
                 const data = await response.json()
                 setChat(data)
-                // console.log("data: ", data)
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -44,7 +40,7 @@ export default function ChatRoom(){
         e.preventDefault()
         if(!message) return 
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/chatroom/${chat[0].chat_id}/messages`, {
+            const response = await fetch(`${import.meta.env.VITE_URL}/chatrooms/${chat[0].chat_id}/messages`, {
                 method: "POST", 
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({content: message}),
@@ -62,7 +58,6 @@ export default function ChatRoom(){
             </div>
             <div className='chatRoom-center'>
                 <div className='leftSide'>
-                    {/* {loadChats()} */}
                 </div>
                 <div className='rightSide'>
                     {

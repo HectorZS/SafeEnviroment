@@ -5,37 +5,8 @@ const isAuthenticated = require('./postRoutes.js')
 const prisma = new PrismaClient()
 const router = express.Router()
 
-// Get a particular chatroom from two users
 
-router.get('/chatroom/:userOneId/chat/:userTwoId', isAuthenticated, async (req, res) => {
-    try {
-        const userOneId = parseInt(req.params.userOneId); 
-        const userTwoId = parseInt(req.params.userTwoId)
-        const chats = await prisma.chat.findMany({
-            where: {
-                 OR: [
-                    {
-                        userOne_id: userOneId,
-                        userTwo_id: userTwoId
-                    },
-                    { 
-                        userOne_id: userTwoId,
-                        userTwo_id: userOneId 
-                    },
-                ],
-            },  
-            include: {
-                userOne: true, 
-                userTwo: true, 
-                messages: true
-            }
-        }); 
-        res.json(chats)
-    } catch (error) {
-        res.status(500).send("Server error")
-    }
-})
-
+// Get particular chatroom 
 router.get('/chatrooms/:chatroomId', isAuthenticated, async (req, res) => {
     try {
         const chatroomId = parseInt(req.params.chatroomId);
@@ -61,7 +32,7 @@ router.get('/chatrooms/:chatroomId', isAuthenticated, async (req, res) => {
 // Get all the chatrooms of current user with the user id
 router.get('/chatrooms/users/:userId', isAuthenticated, async (req, res) => {
     try {
-        const user_id = parseInt(req.params.id); 
+        const user_id = parseInt(req.params.userId); 
         const chats = await prisma.chat.findMany({
             where: {
                  OR: [
@@ -85,8 +56,8 @@ router.get('/chatrooms/users/:userId', isAuthenticated, async (req, res) => {
     }
 })
 
-// post a new chatroom
-router.post('/chatroom', isAuthenticated, async (req, res) => {
+// Post or access new chatroom
+router.post('/chatrooms', isAuthenticated, async (req, res) => {
     try {
         const { userOneId, userTwoId } = req.body
         const existingChat = await prisma.chat.findFirst({
