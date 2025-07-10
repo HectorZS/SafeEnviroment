@@ -84,7 +84,6 @@ export default function HomePage(){
         try {
             const response = await fetch(`${import.meta.env.VITE_URL}/chatroom/${username}/chat/${user.user_id}`, { credentials: "include" })
             const data = await response.json()
-            // console.log(data[0].chat_id)
             let chatroomId; 
             const isEmpty = !data || (Array.isArray(data) && data.length === 0) || (Object.keys(data).length === 0)
 
@@ -100,10 +99,7 @@ export default function HomePage(){
                 console.log("Response: ", chatroomId)
             } else {
                 chatroomId = data[0].chat_id
-                console.log("Chat data found: ", data.chat_id)
             }
-            console.log("FIN: ", chatroomId)
-            // navigate(`/chatroom/${user.user_id}/chat/${username}`)
             navigate(`/chatroom/${chatroomId}`)
         } catch (error) {
             console.error('Error:', error)
@@ -112,9 +108,8 @@ export default function HomePage(){
     
     const loadCurrentPosts = () => {
         return posts.map((post) => (
-            <div className='postOverview'>
+            <div className='postOverview' key={post.post_id}>
                 <Post
-                    key={post.post_id}
                     postId={post.post_id}
                     creator={post.creator.username}
                     title={post.title}

@@ -63,7 +63,7 @@ router.get('/chatrooms/:chatroomId', isAuthenticated, async (req, res) => {
 // Get all the chatrooms of current user with the user id
 router.get('/chatrooms/users/:userId', isAuthenticated, async (req, res) => {
     try {
-        const user_id = parseInt(req.params.id); 
+        const user_id = parseInt(req.params.userId); 
         const chats = await prisma.chat.findMany({
             where: {
                  OR: [
