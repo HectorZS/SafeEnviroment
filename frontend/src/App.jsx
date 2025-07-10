@@ -6,6 +6,7 @@ import LoginForm from './authentication/LoginForm.jsx';
 import CreatePostForm from './components/CreatePostForm.jsx';
 import HomePage from './components/HomePage.jsx';
 import ChatRoom from './components/ChatRoom.jsx';
+import NoChats from './components/skeletons/NoChats.jsx';
 
 function App() {
   return (
@@ -16,8 +17,8 @@ function App() {
           <Route path="/profilecenter" element={<InitialPage/>}/>
           <Route path="/create-post" element={<CreatePostForm/>}/>
           <Route path="/homepage" element={<HomePage/>}/>
-          {/* <Route path="/chatroom/:userOneId/chat/:userTwoId" element={<ChatRoom/>}/> */}
-          <Route path="/chatroom/:chatroomId" element={<ChatRoom/>}/>
+          <Route path="/chatrooms/no-chats" element={<NoChats/>}/>
+          <Route path="/chatrooms/:chatroomId" element={<ChatRoom/>}/>
         </Routes>
       </Router>
   )

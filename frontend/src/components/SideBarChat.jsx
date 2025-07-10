@@ -1,12 +1,15 @@
 import './SideBarChat.css'
 import { useState, useEffect } from 'react'
 import { useUser } from '../context/UserContext.jsx'
+import { useNavigate } from 'react-router-dom'
 
 
 export default function SideBarChat() {
     const [chats, setChats] = useState([])
     const [loading, setLoading] = useState(true)
     const {user} = useUser()
+    const navigate = useNavigate()
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -27,12 +30,14 @@ export default function SideBarChat() {
     }, [user])
 
     const loadChats = () => {
-        return chats.map((chat) => (
-            <div className='chat' key={chat.chat_id}>
-                <div>{chat.userOne.username}</div>
-                <div>{chat.userTwo.username}</div>
+        return chats.map((chat) => {
+            const otherUser = chat.userOne.user_id === user.user_id ? chat.userTwo.username : chat.userOne.username
+            return  (
+            <div className='chat' key={chat.chat_id} onClick={() => navigate(`/chatrooms/${chat.chat_id}`)}>
+                <div>{otherUser}'s chat</div>
             </div>
-        ))
+            )
+        })
     }
     
 
@@ -42,3 +47,4 @@ export default function SideBarChat() {
         </div>
     )
 }
+

@@ -79,32 +79,22 @@ export default function HomePage(){
             console.error("Filter error", error); 
         }
     }
-
-    const handleOnContact = async (username) => {
+    const handleOnContact = async (targetUserId) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/chatroom/${username}/chat/${user.user_id}`, { credentials: "include" })
-            const data = await response.json()
-            let chatroomId; 
-            const isEmpty = !data || (Array.isArray(data) && data.length === 0) || (Object.keys(data).length === 0)
+            const postResponse = await fetch(`${import.meta.env.VITE_URL}/chatrooms`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userOneId: targetUserId, userTwoId: user.user_id }),
+                credentials: "include",
+            });
 
-            if (isEmpty) {
-                const postResponse = await fetch(`${import.meta.env.VITE_URL}/chatroom`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userOneId: username, userTwoId: user.user_id }),
-                    credentials: "include",
-                })
-                const postData = await postResponse.json()
-                chatroomId = postData.chat_id
-                console.log("Response: ", chatroomId)
-            } else {
-                chatroomId = data[0].chat_id
-            }
-            navigate(`/chatroom/${chatroomId}`)
+            const postData = await postResponse.json();
+            const chatroomId = postData.chat_id;
+            navigate(`/chatrooms/${chatroomId}`);
         } catch (error) {
-            console.error('Error:', error)
+            console.error('Error creating or retrieving chatroom:', error);
         }
-    }
+    };
     
     const loadCurrentPosts = () => {
         return posts.map((post) => (

@@ -25,7 +25,7 @@ export default function ChatRoom(){
             }
         };
         fetchData();
-    }, []);
+    }, [chatroomId]);
 
 
     const loadMessages = () => {
@@ -41,18 +41,17 @@ export default function ChatRoom(){
         e.preventDefault()
         if(!message) return 
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/chatroom/${chat[0].chat_id}/messages`, {
+            const response = await fetch(`${import.meta.env.VITE_URL}/chatrooms/${chat[0].chat_id}/messages`, {
                 method: "POST", 
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({content: message}),
                 credentials: "include",
             }); 
+            location.reload();
         } catch (error) {
             console.error("Failed to sent message", error)
         }
     }
-
-    
 
     return(
         <div className='chatRoom'>
@@ -65,11 +64,16 @@ export default function ChatRoom(){
                 </div>
                 <div className='rightSide'>
                     {
-                        chat[0] && user &&
-                        <div>
-                            <h2>Chat between {chat[0].userOne.username} and {chat[0].userTwo.username}</h2>
-                            <div>{loadMessages()}</div>
-                        </div>
+                        
+                    chat[0] && user && 
+                    <div>
+                        <h2>Chat with {chat[0].userOne.user_id === user.user_id 
+                            ? chat[0].userTwo.username
+                            : chat[0].userOne.username
+                            }</h2>
+                        <div>{loadMessages()}</div>
+                    </div>
+                    
                     }
                     <form style={{ display: 'inline-block', marginBottom: '1rem' }}>
                     <input 

@@ -9,8 +9,6 @@ export default function Post({ creator, title, category, description, urgency, s
         setShowVolunteerModal(true)
     }
 
-
-
     const handleCompleteWithVolunteer = (postId, volunteerId) => {
         onComplete(postId, volunteerId)
         setShowVolunteerModal(false)

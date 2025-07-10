@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 const router = express.Router()
 
 
-router.post('/chatroom/:id/messages', isAuthenticated, async (req, res) => {
+router.post('/chatrooms/:id/messages', isAuthenticated, async (req, res) => {
     try {
         const { content } = req.body
         const chat_id = parseInt(req.params.id)
