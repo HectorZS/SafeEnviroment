@@ -79,6 +79,7 @@ export default function HomePage(){
             console.error("Filter error", error); 
         }
     }
+
     const handleOnContact = async (targetUserId) => {
         try {
             const postResponse = await fetch(`${import.meta.env.VITE_URL}/chatrooms`, {
