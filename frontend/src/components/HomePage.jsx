@@ -3,8 +3,7 @@ import Navbar from './Navbar'
 import Post from './Post.jsx'
 import { useEffect, useState } from 'react'
 import { useUser } from '../context/UserContext.jsx'
-import { use } from 'react'
-
+import { useNavigate } from "react-router-dom";
 
 
 export default function HomePage(){
@@ -14,7 +13,7 @@ export default function HomePage(){
     const [urgencyQuery, setUrgencyQuery] = useState('nourgency')
     const [categoryQuery, setCategoryQuery] = useState('nocategory')
     const isHome = true
-    console.log("USER: ", user)
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,11 +31,11 @@ export default function HomePage(){
         e.preventDefault()
         if (!search) return;
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${user.user_id}`);
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${user.username}`);
             const data = await response.json();
             setPosts(data);
         } catch (error) {
-        console.error('Search error:', error);
+            console.error('Search error:', error);
         }
     };
 
@@ -81,9 +80,22 @@ export default function HomePage(){
         }
     }
 
-    const handleOnContact = (username) => {
-        console.log("Hello, ", username)
-    }
+    const handleOnContact = async (targetUserId) => {
+        try {
+            const postResponse = await fetch(`${import.meta.env.VITE_URL}/chatrooms`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userOneId: targetUserId, userTwoId: user.user_id }),
+                credentials: "include",
+            });
+
+            const postData = await postResponse.json();
+            const chatroomId = postData.chat_id;
+            navigate(`/chatrooms/${chatroomId}`);
+        } catch (error) {
+            console.error('Error creating or retrieving chatroom:', error);
+        }
+    };
     
     const loadCurrentPosts = () => {
         return posts.map((post) => (
@@ -98,7 +110,7 @@ export default function HomePage(){
                     urgency={post.urgency}
                     status={post.status}
                     onDelete={() => handleOnDelete(post.post_id)}
-                    onContact={() => handleOnContact(post.creator.username)}
+                    onContact={() => handleOnContact(post.creator.user_id)}
                     isHome={isHome}
                 />                    
             </div>

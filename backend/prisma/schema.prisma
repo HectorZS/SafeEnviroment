@@ -21,7 +21,11 @@ model User {
     password           String
     latitude           Decimal?
     longitude          Decimal?
-    posts              Post[]
+    createdPosts       Post[]   @relation("PostToCreator") 
+    volunteeredPosts   Post[]   @relation("PostToVolunteer") 
+    chatRoomOne        Chat[]   @relation("UserOneChat")
+    chatRoomTwo        Chat[]   @relation("UserTwoChat")
+    messages           Message[]
 }
 
 model Post {
@@ -30,11 +34,31 @@ model Post {
     category           String
     description        String 
     urgency            String
-    status             String?
+    status             String  @default("pending")
     created_at         DateTime  @default(now())
     creator_id         Int
     volunteer_id       Int?
-    creator            User @relation(fields: [creator_id], references: [user_id])
+    creator            User     @relation("PostToCreator", fields: [creator_id], references: [user_id])
+    volunteer          User?    @relation("PostToVolunteer", fields: [volunteer_id], references: [user_id])
 }
 
+model Chat {
+  chat_id              Int      @id @default(autoincrement())
+  userOne_id           Int  
+  userOne              User @relation("UserOneChat", fields: [userOne_id], references: [user_id])
+  userTwo_id           Int
+  userTwo              User @relation("UserTwoChat", fields: [userTwo_id], references: [user_id])
+  messages             Message[]
+  @@unique([userOne_id, userTwo_id])
+}
+
+model Message {
+  message_id           Int      @id @default(autoincrement())
+  chat_id              Int
+  sender_id            Int
+  content              String
+  createdAt            DateTime @default(now())
+  chat                 Chat      @relation(fields: [chat_id], references: [chat_id])
+  sender               User      @relation(fields: [sender_id], references: [user_id])
+}
 

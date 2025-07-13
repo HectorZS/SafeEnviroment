@@ -98,7 +98,7 @@ router.get("/me", async (req, res) => {
             where: { user_id: req.session.user.user_id }, 
             select: { username: true }
         }); 
-        res.json({ id: req.session.user.user_id, username: user.username, latitude: req.session.user.latitude, longitude: req.session.user.longitude})
+        res.json({ user_id: req.session.user.user_id, username: user.username, latitude: req.session.user.latitude, longitude: req.session.user.longitude})
     } catch (error) {
         res.status(401).json({ message: "not logged in" })
     }

@@ -5,7 +5,7 @@ import SignupForm from './authentication/SignupForm.jsx';
 import LoginForm from './authentication/LoginForm.jsx';
 import CreatePostForm from './components/CreatePostForm.jsx';
 import HomePage from './components/HomePage.jsx';
-
+import ChatRoom from './components/ChatRoom.jsx';
 
 function App() {
   return (
@@ -16,6 +16,7 @@ function App() {
           <Route path="/profilecenter" element={<InitialPage/>}/>
           <Route path="/create-post" element={<CreatePostForm/>}/>
           <Route path="/homepage" element={<HomePage/>}/>
+          <Route path="/chatrooms/:chatroomId" element={<ChatRoom/>}/>
         </Routes>
       </Router>
   )

@@ -1,6 +1,5 @@
 import './Navbar.css'
-import { Link, useParams } from "react-router-dom";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useUser } from '../context/UserContext'
 import { useNavigate } from 'react-router-dom';
 export default function Navbar(){
@@ -22,6 +21,7 @@ export default function Navbar(){
                     <h4 onClick={() => {navigate('/homepage')}}>Homepage</h4>
                     <h4 onClick={() => {navigate('/profilecenter')}}>Profile center</h4>
                     <h4 onClick={() => {navigate('/create-post')}}>Create post</h4>
+                    <h4 onClick={() => {navigate('/chats')}}>Messages</h4>
                 </div>
                 <h2 className='centerNavBar'>
                     {user ? `Welcome, ${user.username}` : 'Loading...'}
