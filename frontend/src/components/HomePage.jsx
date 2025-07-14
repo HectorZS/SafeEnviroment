@@ -99,9 +99,8 @@ export default function HomePage(){
     
     const loadCurrentPosts = () => {
         return posts.map((post) => (
-            <div className='postOverview'>
+            <div className='postOverview' key={post.post_id}>
                 <Post
-                    key={post.post_id}
                     postId={post.post_id}
                     creator={post.creator.username}
                     title={post.title}

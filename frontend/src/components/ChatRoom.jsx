@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useUser } from '../context/UserContext.jsx'
 import { HiArrowCircleLeft } from "react-icons/hi";
 import { useNavigate } from 'react-router-dom'
+import SideBarChat from './SideBarChat.jsx';
 
 
 export default function ChatRoom(){
@@ -24,13 +25,13 @@ export default function ChatRoom(){
             }
         };
         fetchData();
-    }, []);
+    }, [chatroomId]);
 
 
     const loadMessages = () => {
         return chat[0].messages.map((message) => (
              user &&
-                <div className='message'>
+                <div className='message' key={message.message_id}>
                     <strong>{user.user_id === message.sender_id ? "you" : (message.sender_id === chat[0].userOne.user_id ? chat[0].userOne.username : chat[0].userTwo.username)} typed:</strong> {message.content}
                 </div>
             ));
@@ -46,6 +47,7 @@ export default function ChatRoom(){
                 body: JSON.stringify({content: message}),
                 credentials: "include",
             }); 
+            location.reload();
         } catch (error) {
             console.error("Failed to sent message", error)
         }
@@ -58,14 +60,20 @@ export default function ChatRoom(){
             </div>
             <div className='chatRoom-center'>
                 <div className='leftSide'>
+                    <SideBarChat/>
                 </div>
                 <div className='rightSide'>
                     {
-                        chat[0] && user &&
-                        <div>
-                            <h2>Chat between {chat[0].userOne.username} and {chat[0].userTwo.username}</h2>
-                            <div>{loadMessages()}</div>
-                        </div>
+                        
+                    chat[0] && user && 
+                    <div>
+                        <h2>Chat with {chat[0].userOne.user_id === user.user_id 
+                            ? chat[0].userTwo.username
+                            : chat[0].userOne.username
+                            }</h2>
+                        <div>{loadMessages()}</div>
+                    </div>
+                    
                     }
                     <form style={{ display: 'inline-block', marginBottom: '1rem' }}>
                     <input 

@@ -57,7 +57,7 @@ router.get('/posts/search/:query/:urgency/:category/:userId', async (req, res) =
     }   
 })
 
-// FILTER QUERY
+// Filter query
 
 router.get('/posts/filterby/:query/:category/:userId', async (req, res) => {
     const urgency = req.params.query
@@ -98,7 +98,7 @@ router.get('/posts/filterby/:query/:category/:userId', async (req, res) => {
 })
 
 
-// OWN POSTS QUERY
+// Own posts query
 
 router.get('/user/posts', async (req, res) => {
     try {
@@ -118,7 +118,7 @@ router.get('/user/posts', async (req, res) => {
     }
 })
 
-// HOMEPAGE POSTS
+// Homepage posts
 
 router.get('/homepage/posts', async (req, res) => {
     try {
@@ -143,7 +143,7 @@ router.get('/homepage/posts', async (req, res) => {
     }
 })
 
-// SEARCH USERS
+// Search users
 router.get('/users/search/:query', async (req, res) => {
     try {
         const query = req.params.query
@@ -168,7 +168,7 @@ router.get('/users/search/:query', async (req, res) => {
     }
 })
 
-// UPDATE STATUS OF POSTS
+// Update status of posts
 router.put('/posts/:id/complete', isAuthenticated, async (req, res) => {
     try {
         const postId = parseInt(req.params.id)
@@ -200,7 +200,7 @@ router.put('/posts/:id/complete', isAuthenticated, async (req, res) => {
     }
 })
 
-// CREATE POST
+// Create posts
 
 router.post('/posts', isAuthenticated, async (req, res) => {
     try {
@@ -224,6 +224,7 @@ router.post('/posts', isAuthenticated, async (req, res) => {
     }
 })
 
+// Delete posts
 router.delete('/posts/:id', isAuthenticated, async (req, res) => {
     try {
         const postId = parseInt(req.params.id)

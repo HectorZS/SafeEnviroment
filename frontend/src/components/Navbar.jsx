@@ -4,14 +4,14 @@ import { useUser } from '../context/UserContext'
 import { useNavigate } from 'react-router-dom';
 export default function Navbar(){
     const [isOpen, setIsOpen] = useState(false)
-    const { user, setUser } = useUser(); // Access authentication state
+    const { user, setUser } = useUser(); 
     let navigate = useNavigate(); 
 
 
     const handleLogout = async () => {
         await fetch(`${import.meta.env.VITE_URL}/logout`, { method: "POST", credentials: "include" });
-        setUser(null); // Remove user from context
-        navigate("/"); // Redirect to login
+        setUser(null);
+        navigate("/"); 
     };
 
     return (
@@ -21,7 +21,23 @@ export default function Navbar(){
                     <h4 onClick={() => {navigate('/homepage')}}>Homepage</h4>
                     <h4 onClick={() => {navigate('/profilecenter')}}>Profile center</h4>
                     <h4 onClick={() => {navigate('/create-post')}}>Create post</h4>
-                    <h4 onClick={() => {navigate('/chats')}}>Messages</h4>
+                    <h4 onClick={
+                        async () => {
+                            try {
+                                const response = await fetch(`${import.meta.env.VITE_URL}/chatrooms/users/${user.user_id}`, {
+                                    credentials: "include",
+                                })
+                                const data = await response.json()
+                                if(data.length > 0) {
+                                    navigate(`/chatrooms/${data[0].chat_id}`)
+                                } else {
+                                    navigate('/chatrooms/no-chats')
+                                }
+                            } catch (error) {
+                                console.error("Error fetching chatrooms: ", error)
+                            }
+                        }
+                    }>Messages</h4>
                 </div>
                 <h2 className='centerNavBar'>
                     {user ? `Welcome, ${user.username}` : 'Loading...'}
