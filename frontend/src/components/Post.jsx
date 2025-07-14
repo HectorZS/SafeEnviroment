@@ -2,7 +2,7 @@ import './Post.css'
 import { useState } from 'react'
 import VolunteerModal from './VolunteerModal'
 
-export default function Post({ creator, title, category, description, urgency, status, onDelete, onContact, isHome, onComplete, postId}){
+export default function Post({ creator, title, category, description, urgency, status, onDelete, onContact, isHome, onComplete, postId, distance}){
     const [showVolunteerModal, setShowVolunteerModal] = useState(false)
 
     const handleOnCompleteClick = () => {
@@ -37,6 +37,11 @@ export default function Post({ creator, title, category, description, urgency, s
                 <div className='description'>
                     {description}
                 </div>
+                {distance !== undefined && distance !== null && (
+                    <div className='distance'>
+                        Distance: {distance.toFixed(2)} km
+                    </div>
+                )}
             </div>
             <div className='buttons'>
                 {!isHome && (

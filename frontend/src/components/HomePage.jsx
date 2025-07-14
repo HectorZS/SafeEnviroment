@@ -125,6 +125,7 @@ export default function HomePage(){
                     description={post.description}
                     urgency={post.urgency}
                     status={post.status}
+                    distance={post.distance}
                     onDelete={() => handleOnDelete(post.post_id)}
                     onContact={() => handleOnContact(post.creator.user_id)}
                     isHome={isHome}
