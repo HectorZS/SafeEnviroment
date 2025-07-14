@@ -26,6 +26,8 @@ model User {
     chatRoomOne        Chat[]   @relation("UserOneChat")
     chatRoomTwo        Chat[]   @relation("UserTwoChat")
     messages           Message[]
+    distancesFrom      Distances[]  @relation("UserA")
+    distancesTo        Distances[]  @relation("UserB")
 }
 
 model Post {
@@ -62,3 +64,12 @@ model Message {
   sender               User      @relation(fields: [sender_id], references: [user_id])
 }
 
+model Distances {
+  id                   Int      @id @default(autoincrement())
+  userA_id             Int
+  userB_id             Int
+  distance             Float
+  userA                User @relation("UserA", fields: [userA_id], references: [user_id])
+  userB                User @relation("UserB", fields: [userB_id], references: [user_id])
+  @@unique([userA_id, userB_id])
+}

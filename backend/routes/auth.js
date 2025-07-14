@@ -5,6 +5,7 @@ const { PrismaClient } = require('../generated/prisma/index.js')
 const prisma = new PrismaClient()
 const router = express.Router()
 const getCoordsForAdressModule = require('./mapsRoutes.js');
+const haversine = require('../utils/haversine')
 const getCoordsForAdress = getCoordsForAdressModule.default;
 
 
@@ -55,6 +56,39 @@ router.post('/signup', async(req, res) => {
                longitude: lng
             }
         })
+
+        // take users that are not the new user
+        const otherUsers = await prisma.user.findMany({
+            where: {
+                user_id: { not: newUser.user_id }, 
+                latitude: { not: null }, 
+                longitude: { not: null }
+            }
+        })
+
+        // calculate distances
+        const distances = otherUsers.map(otherUser => {
+            const distance = haversine(
+                parseFloat(newUser.latitude), 
+                parseFloat(newUser.longitude), 
+                parseFloat(otherUser.latitude), 
+                parseFloat(otherUser.longitude)
+            )
+
+            return {
+                userA_id: Math.min(newUser.user_id, otherUser.user_id), 
+                userB_id: Math.max(newUser.user_id, otherUser.user_id), 
+                distance
+            }
+        })
+
+        // insert distances into the "distances" table
+        await prisma.distances.createMany({
+            data: distances, 
+            skipDuplicates: true
+        })
+
+
         req.session.user = newUser
         res.status(201).json({message: "Signup succesfull"})
     } catch (error) {
