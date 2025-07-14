@@ -1,6 +1,7 @@
 const express = require('express')
 const session = require('express-session')
 const { PrismaClient } = require('../generated/prisma/index.js')
+const recommendationScore = require('../utils/recommendationScore')
 const prisma = new PrismaClient()
 const router = express.Router()
 
@@ -330,6 +331,65 @@ router.put('/posts/:id/complete', isAuthenticated, async (req, res) => {
         res.status(500).json({ error: "Failed to update post status" })
     }
 })
+
+// Recommended posts
+router.get('/posts/recommended/:userId', async (req, res) => {
+    const userId = parseInt(req.params.userId)
+    try {
+        const helpedPosts = await prisma.post.findMany({
+            where: {
+                volunteer_id: userId
+            }, 
+            select: {
+                category: true
+            }
+        })
+        const helpedCategories = new Set(helpedPosts.map(post => post.category))
+        const distances = await prisma.distances.findMany({
+            where: {
+                OR: [
+                    { userA_id: userId }, 
+                    { userB_id: userId }
+                ]
+            }
+        })
+        const distanceMap = new Map()
+        const nearbyUsersIds = new Set()
+        distances.forEach(distance => {
+            const otherUserId = distance.userA_id === userId ? distance.userB_id : distance.userA_id
+            distanceMap.set(otherUserId, distance.distance)
+            nearbyUsersIds.add(otherUserId)
+        })
+
+        const candidatePosts = await prisma.post.findMany({
+            where: {
+                creator_id: {
+                    not: userId, 
+                    in: [...nearbyUsersIds]
+                }, 
+                status: {
+                    not: "completed"
+                }
+            }, 
+            include: {
+                creator: true
+            }
+        })
+
+        const postsWithScore = candidatePosts.map(post => {
+            const distance = distanceMap.get(post.creator.user_id) ?? 9999
+            const score = recommendationScore(post, helpedCategories, distance)
+            return {...post, distance, score }
+        })
+
+        postsWithScore.sort((a, b) => b.score - a.score)
+        res.json(postsWithScore)
+    } catch (error) {
+        console.error("Error in recommendation: ", error)
+        res.status(500).json({ error: "Server error"})
+    }
+})
+
 
 // Create posts
 
