@@ -13,15 +13,17 @@ const isAuthenticated = (req, res, next) => {
 
 // Search query
 
-router.get('/posts/search/:query/:urgency/:category/:userId', async (req, res) => {
-    const userId = (req.params.userId)
+router.get('/posts/search/:query/:urgency/:category/:distance/:userId', async (req, res) => {
+    const userId = parseInt(req.params.userId)
     const title = req.params.query
     const urgency = req.params.urgency
     const category = req.params.category
+    const distance = req.params.distance
     let urgencyBool = true
     let categoryBool = true
     let titleBool = true
-    if (!title || !urgency || !category) {
+    let distanceBool = true
+    if (!title || !urgency || !category || !distance) {
         return res.status(400).json({ error: 'Missing query parameter'})
     }
     try {
@@ -32,11 +34,45 @@ router.get('/posts/search/:query/:urgency/:category/:userId', async (req, res) =
             categoryBool = false
         }
         if(title === "notitle") {
-            titleBool = false; 
+            titleBool = false 
         }
+        if(distance === 'nodistance'){
+            distanceBool = false
+        }
+
+        if(distanceBool) {
+            const distanceNum = parseFloat(distance)
+            const nearbyUsers = await prisma.distances.findMany({
+                where: {
+                    OR: [
+                        {
+                            userA_id: userId, 
+                            distance: { lte: distanceNum }
+                        },
+                        {
+                            userB_id: userId, 
+                            distance: { lte: distanceNum}
+                        }
+                    ]
+                }
+            })
+
+            nearbyUsersIds = nearbyUsers.map(dist => {
+                return dist.userA_id === userId ? dist.userB_id : dist.userA_id
+            })
+
+            if(nearbyUsersIds === 0) {
+                return res.json([])
+            }
+        }
+
         const posts = await prisma.post.findMany({
             where: {
-                creator: { username: {not: userId} }, 
+                creator: { 
+                    user_id: {not: userId, 
+                    ...(distanceBool ? { in: nearbyUsersIds }: {})
+                    }
+                }, 
                 title: titleBool ? {contains: title} : {}, 
                 urgency: urgencyBool ? {contains: urgency} : {}, 
                 category: categoryBool ? {contains: category} : {}, 
@@ -59,12 +95,14 @@ router.get('/posts/search/:query/:urgency/:category/:userId', async (req, res) =
 
 // FILTER QUERY
 
-router.get('/posts/filterby/:query/:category/:userId', async (req, res) => {
+router.get('/posts/filterby/:query/:category/:distance/:userId', async (req, res) => {
     const urgency = req.params.query
     const category = req.params.category
-    const userId = String(req.params.userId)
+    const distance = req.params.distance
+    const userId = parseInt(req.params.userId)
     let urgencyBool = true
     let categoryBool = true
+    let distanceBool = true
     if (!urgency) {
         return res.status(400).json({ error: 'Missing query parameter'})
     }
@@ -75,13 +113,49 @@ router.get('/posts/filterby/:query/:category/:userId', async (req, res) => {
         if(category === "nocategory") {
             categoryBool = false
         }
-        const where = {
-            creator: {username: {not: userId} },
-        ...(urgencyBool ? { urgency: { contains: urgency } } : {}),
-        ...(categoryBool ? { category: {contains: category} }: {}), 
-        status: {
-            not: "completed"
+        if(distance === "nodistance"){
+            distanceBool = false
         }
+
+        let nearbyUsersIds = []
+        if(distanceBool){
+            const distanceNum = parseFloat(distance)
+            const nearbyUsers = await prisma.distances.findMany({
+                where: {
+                    OR: [
+                        {
+                            userA_id: userId, 
+                            distance: { lte: distanceNum }
+                        }, 
+                        {
+                            userB_id: userId, 
+                            distance: { lte: distanceNum }
+                        }
+                    ]
+                }
+            })
+
+            nearbyUsersIds = nearbyUsers.map(dist => {
+                return dist.userA_id === userId ? dist.userB_id : dist.userA_id
+            })
+
+            if(nearbyUsersIds === 0) {
+                return res.json([])
+            }
+        }
+
+        const where = {
+            creator: {
+                user_id: {
+                    not: userId, 
+                    ...(distanceBool ? { in: nearbyUsersIds }: {})
+                }
+            },
+            ...(urgencyBool ? { urgency: { contains: urgency } } : {}),
+            ...(categoryBool ? { category: {contains: category} }: {}), 
+            status: {
+                not: "completed"
+            }
         };
         const posts = await prisma.post.findMany({
             where,

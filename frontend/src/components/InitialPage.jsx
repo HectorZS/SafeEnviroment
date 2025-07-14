@@ -16,7 +16,6 @@ export default function InitialPage(){
             .then(response => response.json())
             .then(data => {
                 setPosts(data)
-                console.log(data)
             })
             .catch(error => console.error('Error fetching posts:', error))
         };

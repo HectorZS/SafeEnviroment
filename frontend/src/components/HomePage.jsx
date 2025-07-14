@@ -12,6 +12,7 @@ export default function HomePage(){
     const [search, setSearch] = useState('')
     const [urgencyQuery, setUrgencyQuery] = useState('nourgency')
     const [categoryQuery, setCategoryQuery] = useState('nocategory')
+    const [distanceQuery, setDistanceQuery] = useState('nodistance')
     const isHome = true
     const navigate = useNavigate();
 
@@ -31,7 +32,7 @@ export default function HomePage(){
         e.preventDefault()
         if (!search) return;
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${user.username}`);
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${distanceQuery}/${user.user_id}`);
             const data = await response.json();
             setPosts(data);
         } catch (error) {
@@ -45,7 +46,7 @@ export default function HomePage(){
         setUrgencyQuery(e.target.value)
         setSearch(''); // Clear search input
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${user.username}`);
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${distanceQuery}/${user.user_id}`);
             const data = await response.json();
             setPosts(data);
         } catch (error) {
@@ -58,7 +59,21 @@ export default function HomePage(){
         setCategoryQuery(e.target.value)
         setSearch(''); // Clear search input
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${user.username}`);
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${distanceQuery}/${user.user_id}`);
+            const data = await response.json();
+            setPosts(data);
+        } catch (error) {
+            console.error("Filter error", error); 
+        }
+    }
+
+
+    const handleSelectDistance = async (e) => {
+        e.preventDefault()
+        setDistanceQuery(e.target.value)
+        setSearch(''); // Clear search input
+        try {
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${categoryQuery}/${e.target.value}/${user.user_id}`);
             const data = await response.json();
             setPosts(data);
         } catch (error) {
@@ -71,8 +86,9 @@ export default function HomePage(){
         setSearch(''); // Clear search input
         setCategoryQuery('nocategory')
         setUrgencyQuery('nourgency')
+        setDistanceQuery('nodistance')
          try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/nourgency/nocategory/${user.username}`);
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/nourgency/nocategory/nodistance/${user.user_id}`);
             const data = await response.json();
             setPosts(data);
         } catch (error) {
@@ -158,6 +174,18 @@ export default function HomePage(){
                     <option value="Errands & Assistance">Errands & Assistance</option>
                     <option value="Home & Yard Help">Home & Yard Help</option>
                     <option value="Social & Community Engagement">Social & Community Engagement</option>
+                </select>
+                <select
+                    id="distance"
+                    name="distance"
+                    value={distanceQuery}
+                    onChange={handleSelectDistance}
+                >
+                    <option value="nodistance">Distance</option>
+                    <option value={1}>1 km</option>
+                    <option value={3}>3 km</option>
+                    <option value={10}>10 km</option>
+                    <option value={50}>50 km</option>
                 </select>
             </div>
             <div className='postsHomePage'>
