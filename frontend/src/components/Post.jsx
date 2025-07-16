@@ -5,15 +5,15 @@ import VolunteerModal from './VolunteerModal'
 export default function Post({ creator, title, category, description, urgency, status, onDelete, onContact, isHome, onComplete, postId, distance, address, createdAt}){
     const [showVolunteerModal, setShowVolunteerModal] = useState(false)
 
-     const dateObj = typeof createdAt === 'string' ? new Date(createdAt) : createdAt;
-  const formattedDate = dateObj.toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true, // Use 12-hour clock with AM/PM
-  });
+    const dateObj = typeof createdAt === 'string' ? new Date(createdAt) : createdAt;
+    const formattedDate = dateObj.toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true, // Use 12-hour clock with AM/PM
+    });
 
     const handleOnCompleteClick = () => {
         setShowVolunteerModal(true)

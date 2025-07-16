@@ -18,7 +18,6 @@ const CreateMap = ({ onPlaceSelect }) => {
     useEffect(() => {
         if (!selectedPlace?.geometry?.location) return;
         const placeTypes = selectedPlace.types || []
-        console.log("pl: ",placeTypes)
        onPlaceSelect({location: selectedPlace?.formatted_address, types: placeTypes})
     }, [selectedPlace]);
 

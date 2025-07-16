@@ -8,7 +8,6 @@ export default function SignupForm() {
     const [formData, setFormData] = useState({ email: "", username: "", password: "", address: ""})
     const { setUser } = useUser()
     const [types, setTypes] = useState('')
-    const [message, setMessage] = useState("")
 
     function handleChange(event) {
         const { name, value } = event.target;
@@ -26,7 +25,7 @@ export default function SignupForm() {
                 alert("Password must be at least 8 characters long")
                 return 
             }
-            
+
             const response = await fetch(`${import.meta.env.VITE_URL}/signup`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

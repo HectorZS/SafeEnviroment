@@ -16,6 +16,8 @@ export default function HomePage(){
     const [distanceQuery, setDistanceQuery] = useState('nodistance')
     const [areaModal, setAreaModal] = useState(false)
     const [locationName, setLocationName] = useState(null)
+    const [locationMap, setLocationMap] = useState('nolocation') // new const
+    const [placeTypes, setPlaceTypes] = useState('notypes') // new const
     const isHome = true
     const navigate = useNavigate();
 
@@ -35,7 +37,12 @@ export default function HomePage(){
         e.preventDefault()
         if (!search) return;
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${distanceQuery}/${user.user_id}`);
+            let response
+            if(locationMap === 'nolocation') {
+                response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${distanceQuery}/${user.user_id}`);
+            } else {
+                response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${distanceQuery}/${user.user_id}/${locationMap}/${placeTypes}`);
+            }
             const data = await response.json();
             setPosts(data);
         } catch (error) {
@@ -49,7 +56,12 @@ export default function HomePage(){
         setUrgencyQuery(e.target.value)
         setSearch(''); // Clear search input
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${distanceQuery}/${user.user_id}`);
+            let response
+            if(locationMap === 'nolocation') {
+                response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${distanceQuery}/${user.user_id}`);
+            } else {
+                response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${distanceQuery}/${user.user_id}/${locationMap}/${placeTypes}`)
+            }
             const data = await response.json();
             setPosts(data);
         } catch (error) {
@@ -62,7 +74,12 @@ export default function HomePage(){
         setCategoryQuery(e.target.value)
         setSearch(''); // Clear search input
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${distanceQuery}/${user.user_id}`);
+            let response
+            if (locationMap === 'nolocation') {
+                response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${distanceQuery}/${user.user_id}`);
+            } else {
+                response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${distanceQuery}/${user.user_id}/${locationMap}/${placeTypes}`)
+            }
             const data = await response.json();
             setPosts(data);
         } catch (error) {
@@ -84,12 +101,15 @@ export default function HomePage(){
         }
     }
 
+
     const handleClear = async (e) => {
         e.preventDefault()
         setSearch(''); // Clear search input
         setCategoryQuery('nocategory')
         setUrgencyQuery('nourgency')
         setDistanceQuery('nodistance')
+        setLocationMap('nolocation')
+        setPlaceTypes('notypes')
         setLocationName(null)
          try {
             const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/nourgency/nocategory/nodistance/${user.user_id}`);
@@ -126,7 +146,21 @@ export default function HomePage(){
         setLocationName(name)
         setAreaModal(false)
     }
-    
+
+    const handleBoundsSelect = async ({ location, placeTypes }) => {
+        setLocationMap(location) // new constant
+        setPlaceTypes(placeTypes) // new constant
+        setSearch(''); // Clear search input
+        try {
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${categoryQuery}/${distanceQuery}/${user.user_id}/${location}/${placeTypes}`, {
+            credentials: 'include' })
+            const data = await response.json()
+            handleLocationPostsLoad(data, location)
+        } catch (error) {
+        console.error('Search error:', error);
+        }
+    }
+
     const loadCurrentPosts = () => {
         return posts.map((post) => (
             <div className='postOverview' key={post.post_id}>
@@ -148,7 +182,6 @@ export default function HomePage(){
             </div>
         ));
     };
-
 
     return (
        <div className='homePage'>
@@ -191,6 +224,7 @@ export default function HomePage(){
                     <option value="Home & Yard Help">Home & Yard Help</option>
                     <option value="Social & Community Engagement">Social & Community Engagement</option>
                 </select>
+                { locationMap === 'nolocation' &&
                 <select
                     id="distance"
                     name="distance"
@@ -203,6 +237,7 @@ export default function HomePage(){
                     <option value={10}>10 km</option>
                     <option value={50}>50 km</option>
                 </select>
+                }
                 <button onClick={handleOnClickArea}>Select area</button>
                 {
                     locationName && (
@@ -219,7 +254,8 @@ export default function HomePage(){
                 areaModal && (
                     <SelectAreaModal
                         onClose={() => setAreaModal(false)}
-                        onPostsLoad={handleLocationPostsLoad}
+                        // onPostsLoad={handleLocationPostsLoad}
+                        onBoundSet={handleBoundsSelect}
                         filters={{
                             urgency: urgencyQuery, 
                             category: categoryQuery, 
