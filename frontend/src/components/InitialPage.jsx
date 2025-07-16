@@ -1,6 +1,7 @@
 import './InitialPage.css'
 import Navbar from './Navbar.jsx'
-import Map from './CreateMap.jsx'
+// import Map from './CreateMap.jsx'
+import Map from './UserMap.jsx'
 import Post from './Post.jsx'
 import { useUser } from '../context/UserContext.jsx'
 import { useState, useEffect } from 'react'
@@ -80,6 +81,8 @@ export default function InitialPage(){
                     status={post.status}
                     onDelete={() => handleOnDelete(post.post_id)}
                     onComplete={handleOnComplete}
+                    address={post.creator.address}
+                    createdAt={post.created_at}
                 />                    
             </div>
         ));

@@ -4,6 +4,7 @@ import Post from './Post.jsx'
 import { useEffect, useState } from 'react'
 import { useUser } from '../context/UserContext.jsx'
 import { useNavigate } from "react-router-dom";
+import SelectAreaModal from './SelectAreaModal.jsx'
 
 
 export default function HomePage(){
@@ -13,6 +14,8 @@ export default function HomePage(){
     const [urgencyQuery, setUrgencyQuery] = useState('nourgency')
     const [categoryQuery, setCategoryQuery] = useState('nocategory')
     const [distanceQuery, setDistanceQuery] = useState('nodistance')
+    const [areaModal, setAreaModal] = useState(false)
+    const [locationName, setLocationName] = useState(null)
     const isHome = true
     const navigate = useNavigate();
 
@@ -87,6 +90,7 @@ export default function HomePage(){
         setCategoryQuery('nocategory')
         setUrgencyQuery('nourgency')
         setDistanceQuery('nodistance')
+        setLocationName(null)
          try {
             const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/nourgency/nocategory/nodistance/${user.user_id}`);
             const data = await response.json();
@@ -112,6 +116,16 @@ export default function HomePage(){
             console.error('Error creating or retrieving chatroom:', error);
         }
     };
+
+    const handleOnClickArea = () => {
+        setAreaModal(true)
+    }
+
+    const handleLocationPostsLoad = (postsFromArea, name) => {
+        setPosts(postsFromArea)
+        setLocationName(name)
+        setAreaModal(false)
+    }
     
     const loadCurrentPosts = () => {
         return posts.map((post) => (
@@ -128,6 +142,8 @@ export default function HomePage(){
                     onDelete={() => handleOnDelete(post.post_id)}
                     onContact={() => handleOnContact(post.creator.user_id)}
                     isHome={isHome}
+                    address={post.creator.address}
+                    createdAt={post.created_at}
                 />                    
             </div>
         ));
@@ -187,10 +203,32 @@ export default function HomePage(){
                     <option value={10}>10 km</option>
                     <option value={50}>50 km</option>
                 </select>
+                <button onClick={handleOnClickArea}>Select area</button>
+                {
+                    locationName && (
+                        <div className='location-banner'>
+                            Showing results for: <strong>{locationName}</strong>
+                        </div>
+                    )
+                }
             </div>
             <div className='postsHomePage'>
                 {posts && user ? loadCurrentPosts() : "Loading..."}
             </div>
+            {
+                areaModal && (
+                    <SelectAreaModal
+                        onClose={() => setAreaModal(false)}
+                        onPostsLoad={handleLocationPostsLoad}
+                        filters={{
+                            urgency: urgencyQuery, 
+                            category: categoryQuery, 
+                            distance: distanceQuery
+                            }
+                        }
+                    />
+                )
+            }
         </main>
         </div>
     )

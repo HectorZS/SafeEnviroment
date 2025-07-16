@@ -11,7 +11,7 @@ const getCoordsForAdress = getCoordsForAdressModule.default;
 
 
 router.post('/signup', async(req, res) => {
-    let coordinates, lat, lng
+    let coordinates, lat, lng, streetNumber, route, locality, administrativeAreaLevel1
     try {
         const { email, username, password, address  } = req.body
         if (!username || !password || !email) {
@@ -36,8 +36,8 @@ router.post('/signup', async(req, res) => {
             return res.status(400).json({error: "Username already exists"})
         }
         try {
-        coordinates = await getCoordsForAdress(address)
-
+        [coordinates, streetNumber, route, locality, administrativeAreaLevel1] = await getCoordsForAdress(address)
+        
         } catch (error) {
             return res.status(500).json({error: "Invalid location"})
         }
@@ -53,7 +53,12 @@ router.post('/signup', async(req, res) => {
                username, 
                password: hashedPassword, 
                latitude: lat, 
-               longitude: lng
+               longitude: lng, 
+               address,
+               streetNumber: (streetNumber), 
+               route: (route), 
+               locality: (locality), 
+               administrativeArea: (administrativeAreaLevel1)
             }
         })
 

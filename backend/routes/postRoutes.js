@@ -3,6 +3,7 @@ const session = require('express-session')
 const { PrismaClient } = require('../generated/prisma/index.js')
 const prisma = new PrismaClient()
 const router = express.Router()
+const haversine = require('../utils/haversine')
 
 const isAuthenticated = (req, res, next) => {
     if (!req.session.user) {
@@ -180,6 +181,7 @@ router.get('/posts/filterby/:query/:category/:distance/:userId', async (req, res
                 not: "completed"
             }
         };
+
         const posts = await prisma.post.findMany({
             where,
             include: {creator: true},
@@ -330,6 +332,103 @@ router.put('/posts/:id/complete', isAuthenticated, async (req, res) => {
         res.status(500).json({ error: "Failed to update post status" })
     }
 })
+
+// location filter TC
+
+router.get('/posts/by-location/:search/:types', async (req, res) => {
+    const search = String(req.params.search)
+    const types = String(req.params.types)
+    const userId = req.session?.user?.user_id
+    let where
+    try {
+        // state
+        if(types.includes("administrative_area_level_1")){
+            where = {
+                    user_id: {
+                        not: userId, 
+                    }, 
+                    OR: [
+                        {
+                            administrativeArea: {
+                            path: ['long_name'],
+                            string_contains: search,
+                            },
+                        },
+                        {
+                            administrativeArea: {
+                            path: ['short_name'],
+                            string_contains: search,
+                            },
+                        },
+                    ],
+                }
+        }
+        else if(types.includes("locality")){
+            // city
+            where = {
+                    user_id: {
+                        not: userId, 
+                    }, 
+                    OR: [
+                        {
+                            locality: {
+                            path: ['long_name'],
+                            string_contains: search,
+                            },
+                        },
+                        {
+                            locality: {
+                            path: ['short_name'],
+                            string_contains: search,
+                            },
+                        },
+                    ],
+                }
+        }
+        else {
+            // route
+            where = {
+                    user_id: {
+                        not: userId, 
+                    }, 
+                    address: { contains : search}
+                }
+        }
+
+
+        const allUsers = await prisma.user.findMany({
+            where,
+            select: {
+                user_id: true, 
+            }
+        })
+        const allUsersIds = allUsers.map(user => user.user_id)
+        const postsInArea = await prisma.post.findMany({
+            where: {
+            creator: {
+                user_id: {
+                    not: userId, 
+                    in: allUsersIds
+                }
+            }, 
+            status: {
+                not: "completed"
+            }
+            },
+            include: {
+                creator: true
+            }, 
+            orderBy: {
+                created_at: 'desc'
+            }
+        })
+        res.json(postsInArea)
+    } catch (error) {
+        console.error("Error while searching for places: ", error)
+        res.status(500).json({ error: "Internal server error" });
+    }
+})
+
 
 // Create posts
 
