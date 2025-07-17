@@ -84,9 +84,30 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:location/
                             },
                         ],
                     }
+            } else if(types.includes("route")){
+                // route
+                where = {
+                        user_id: {
+                            not: userId, 
+                        }, 
+                        OR: [
+                            {
+                                route: {
+                                path: ['long_name'],
+                                string_contains: location,
+                                },
+                            },
+                            {
+                                route: {
+                                path: ['short_name'],
+                                string_contains: location,
+                                },
+                            },
+                        ],
+                    }
             }
             else {
-                // route
+                // street address
                 where = {
                         user_id: {
                             not: userId, 
@@ -140,7 +161,7 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:location/
                 ]
             }
         })
-
+        console.log("DIS SE: ", distances)
         const distanceMap = new Map()
         distances.forEach(distance => {
             const otherUserId = distance.userA_id === userId ? distance.userB_id : distance.userA_id
@@ -171,12 +192,14 @@ router.get('/posts/filterby/:query/:category/:distance/:userId/:location/:types'
     const category = req.params.category
     const location = req.params.location
     const types = String(req.params.types)
-    const userId = req.session?.user?.user_id
+    // const userId = req.session?.user?.user_id
+    const userId = parseInt(req.params.userId)
     let distance = req.params.distance
     let urgencyBool = true
     let categoryBool = true
     let locationBool = true
     let where    
+    console.log("US: ", userId)
     try {
         if(urgency === "nourgency") {
             urgencyBool = false
@@ -187,7 +210,6 @@ router.get('/posts/filterby/:query/:category/:distance/:userId/:location/:types'
         if(location === 'nolocation'){
             locationBool = false
         }
-       
         // state
         if(locationBool){
             if(types.includes("administrative_area_level_1")){
@@ -233,8 +255,29 @@ router.get('/posts/filterby/:query/:category/:distance/:userId/:location/:types'
                         ],
                     }
             }
-            else {
+            else if(types.includes("route")){
                 // route
+                where = {
+                        user_id: {
+                            not: userId, 
+                        }, 
+                        OR: [
+                            {
+                                route: {
+                                path: ['long_name'],
+                                string_contains: location,
+                                },
+                            },
+                            {
+                                route: {
+                                path: ['short_name'],
+                                string_contains: location,
+                                },
+                            },
+                        ],
+                    }
+            } else {
+                // street address
                 where = {
                         user_id: {
                             not: userId, 
@@ -287,6 +330,7 @@ router.get('/posts/filterby/:query/:category/:distance/:userId/:location/:types'
                 ]
             }
         })
+
 
         const distanceMap = new Map()
         distances.forEach(distance => {
