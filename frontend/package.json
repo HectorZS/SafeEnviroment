@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.4.2",
-    "@reach/combobox": "^0.18.0",
     "@react-google-maps/api": "^2.20.7",
     "@vis.gl/react-google-maps": "^1.5.3",
     "axios": "^1.10.0",
