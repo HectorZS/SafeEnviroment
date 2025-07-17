@@ -13,6 +13,7 @@ export default function HomePage(){
     const [urgencyQuery, setUrgencyQuery] = useState('nourgency')
     const [categoryQuery, setCategoryQuery] = useState('nocategory')
     const [distanceQuery, setDistanceQuery] = useState('nodistance')
+    const [postsMode, setPostsMode] = useState('normalMode')
     const isHome = true
     const navigate = useNavigate();
 
@@ -32,7 +33,9 @@ export default function HomePage(){
         e.preventDefault()
         if (!search) return;
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${distanceQuery}/${user.user_id}`);
+            console.log("FF: ", postsMode)
+            // const response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${distanceQuery}/${user.user_id}`);
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${distanceQuery}/${user.user_id}/${postsMode}`);
             const data = await response.json();
             setPosts(data);
         } catch (error) {
@@ -46,7 +49,8 @@ export default function HomePage(){
         setUrgencyQuery(e.target.value)
         setSearch(''); // Clear search input
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${distanceQuery}/${user.user_id}`);
+            // const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${distanceQuery}/${user.user_id}`);
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${distanceQuery}/${user.user_id}/${postsMode}`);
             const data = await response.json();
             setPosts(data);
         } catch (error) {
@@ -59,7 +63,8 @@ export default function HomePage(){
         setCategoryQuery(e.target.value)
         setSearch(''); // Clear search input
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${distanceQuery}/${user.user_id}`);
+            // const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${distanceQuery}/${user.user_id}`);
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${distanceQuery}/${user.user_id}/${postsMode}`);
             const data = await response.json();
             setPosts(data);
         } catch (error) {
@@ -73,7 +78,8 @@ export default function HomePage(){
         setDistanceQuery(e.target.value)
         setSearch(''); // Clear search input
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${categoryQuery}/${e.target.value}/${user.user_id}`);
+            // const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${categoryQuery}/${e.target.value}/${user.user_id}`);
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${categoryQuery}/${e.target.value}/${user.user_id}/${postsMode}`);
             const data = await response.json();
             setPosts(data);
         } catch (error) {
@@ -87,8 +93,9 @@ export default function HomePage(){
         setCategoryQuery('nocategory')
         setUrgencyQuery('nourgency')
         setDistanceQuery('nodistance')
+        setPostsMode('normalMode')
          try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/nourgency/nocategory/nodistance/${user.user_id}`);
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/nourgency/nocategory/nodistance/${user.user_id}/normalMode`);
             const data = await response.json();
             setPosts(data);
         } catch (error) {
@@ -112,6 +119,22 @@ export default function HomePage(){
             console.error('Error creating or retrieving chatroom:', error);
         }
     };
+
+    const handleOnRecommended = async (e) => {
+        e.preventDefault()
+        setSearch(''); // Clear search input
+        setCategoryQuery('nocategory')
+        setUrgencyQuery('nourgency')
+        setDistanceQuery('nodistance')
+        setPostsMode('recomendedMode')
+        try {
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/recommended/${user.user_id}`);
+            const data = await response.json()
+            setPosts(data)
+        } catch (error) {
+
+        }
+    }
     
     const loadCurrentPosts = () => {
         return posts.map((post) => (
@@ -149,6 +172,14 @@ export default function HomePage(){
                 />
                 <button type="submit" onClick={handleSearch}>Search</button>
                 <button type="sumbit" onClick={handleClear}>Clear filter fields</button>
+                <button type="sumbit" onClick={handleOnRecommended}>Recommended posts</button>
+                {
+                    postsMode === 'recomendedMode' && (
+                        <div className='recomendedModeBanner'>
+                            Showing recomended posts
+                        </div>
+                    )                    
+                }
             </form>
             <div className='categoryButtons'>
                 <select

@@ -1,20 +1,32 @@
-function recommendationScore(post, categoriesHelped, distance){
+function recommendationScore(post, categoriesHelped, distance) {
     let score = 0
-    const urgencyW = {
-        high: 3, 
-        medium: 2, 
-        low: 1
-    }
-    score += (urgencyW[post.urgency?.toLowerCase()] || 0) * 10
-    if(categoriesHelped.has(post.category)){ 
+
+    const URGENCY_WEIGHTS = { high: 3, medium: 2, low: 1 }
+    const urgencyWeight = URGENCY_WEIGHTS[post.urgency?.toLowerCase()] || 0
+
+    score += urgencyWeight * 10
+
+    if (categoriesHelped.has(post.category)) {
         score += 20
     }
-    if (distance < 1) score += 40
-    else if (distance < 3) score += 30
-    else if (distance < 10) score += 20
-    else if (distance < 50) score += 10
+
+    const DISTANCE_THRESHOLDS = [
+        { max: 1, bonus: 40 },
+        { max: 3, bonus: 30 },
+        { max: 10, bonus: 20 },
+        { max: 50, bonus: 10 }
+    ];
+
+    for (const pairDist of DISTANCE_THRESHOLDS) { // bonus by distance multiplied by urgency weight
+        if (distance < pairDist.max) {
+            score += pairDist.bonus * urgencyWeight
+            break
+        }
+    }
 
     return score
 }
 
 module.exports = recommendationScore
+
+
