@@ -39,9 +39,9 @@
 .postOverview {
     display: flex;
     flex-direction: column;
-    border-radius: 12px;
+    /* border-radius: 12px; */
     align-items: center;
-    height: 200px;
+    height: 250px;
     border: 1px solid black;
 }
 

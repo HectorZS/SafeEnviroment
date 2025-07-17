@@ -2,8 +2,18 @@ import './Post.css'
 import { useState } from 'react'
 import VolunteerModal from './VolunteerModal'
 
-export default function Post({ creator, title, category, description, urgency, status, onDelete, onContact, isHome, onComplete, postId, distance}){
+export default function Post({ creator, title, category, description, urgency, status, onDelete, onContact, isHome, onComplete, postId, distance, address, createdAt}){
     const [showVolunteerModal, setShowVolunteerModal] = useState(false)
+
+    const dateObj = typeof createdAt === 'string' ? new Date(createdAt) : createdAt;
+    const formattedDate = dateObj.toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true, // Use 12-hour clock with AM/PM
+    });
 
     const handleOnCompleteClick = () => {
         setShowVolunteerModal(true)
@@ -23,8 +33,11 @@ export default function Post({ creator, title, category, description, urgency, s
                 <div className='creator'>
                     by {creator}
                 </div>
-                <div className='urgency'>
+                  <div className='urgency'>
                     Urgency: {urgency}
+                </div>
+                <div className='creation-date'>
+                    Date: {formattedDate}
                 </div>
                  <div className='status'>
                     Status: {status || 'Pending'}
@@ -34,6 +47,9 @@ export default function Post({ creator, title, category, description, urgency, s
                 </div>
                 <div className='description'>
                     {description}
+                </div>
+                <div className='address'>
+                    <strong>{address}</strong>
                 </div>
                 {distance !== undefined && distance !== null && (
                     <div className='distance'>

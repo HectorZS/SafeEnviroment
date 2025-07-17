@@ -2,12 +2,12 @@ import './SignupForm.css'
 import { useState } from 'react' 
 import { useUser } from '../context/UserContext';
 import { Link } from 'react-router-dom'
-
+import CreateMap from './SetLocationMap'
 
 export default function SignupForm() {
     const [formData, setFormData] = useState({ email: "", username: "", password: "", address: ""})
     const { setUser } = useUser()
-    const [message, setMessage] = useState("")
+    const [types, setTypes] = useState('')
 
     function handleChange(event) {
         const { name, value } = event.target;
@@ -25,6 +25,7 @@ export default function SignupForm() {
                 alert("Password must be at least 8 characters long")
                 return 
             }
+
             const response = await fetch(`${import.meta.env.VITE_URL}/signup`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -44,7 +45,13 @@ export default function SignupForm() {
         }
     };
 
-
+    const handleSelectedPlace = async ({ location, types }) => {
+        setFormData(prev => ({
+            ...prev, 
+            address: location
+        }))
+        setTypes(types)
+    }
 
     return (
          <div className='overlayStyleSignup' >
@@ -57,7 +64,7 @@ export default function SignupForm() {
                 <label>Password</label>
                 <input type="password"  placeholder='8 characters minimum' name="password" value={formData.password} onChange={handleChange}/>
                 <label>Address</label>
-                <input type="address"  placeholder='# st adress, City' name="address" value={formData.address} onChange={handleChange}/>
+                <CreateMap onPlaceSelect={handleSelectedPlace}/>
                 <button className='submit' onClick={handleSubmit}>Sign up</button>
                 <div className="loginlink">
                     <p>Already have an account? </p>
