@@ -19,12 +19,11 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:location/
     const category = req.params.category
     const location = req.params.location
     const types = req.params.types
-    let distance = req.params.distance
     let urgencyBool = true
     let categoryBool = true
     let titleBool = true
     let locationBool = true
-    if (!title || !urgency || !category || !distance) {
+    if (!title || !urgency || !category) {
         return res.status(400).json({ error: 'Missing query parameter'})
     }
     try {
@@ -161,7 +160,6 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:location/
                 ]
             }
         })
-        console.log("DIS SE: ", distances)
         const distanceMap = new Map()
         distances.forEach(distance => {
             const otherUserId = distance.userA_id === userId ? distance.userB_id : distance.userA_id
@@ -188,18 +186,15 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:location/
 
 // filter search WITH AREA SELECTED
 router.get('/posts/filterby/:query/:category/:distance/:userId/:location/:types', async (req, res) => {
+    const userId = parseInt(req.params.userId)
     const urgency = req.params.query
     const category = req.params.category
     const location = req.params.location
     const types = String(req.params.types)
-    // const userId = req.session?.user?.user_id
-    const userId = parseInt(req.params.userId)
-    let distance = req.params.distance
     let urgencyBool = true
     let categoryBool = true
     let locationBool = true
     let where    
-    console.log("US: ", userId)
     try {
         if(urgency === "nourgency") {
             urgencyBool = false
