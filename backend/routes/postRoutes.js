@@ -26,7 +26,7 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:postsMode
     let categoryBool = true
     let titleBool = true
     let distanceBool = true
-    let helpedPosts, helpedCategories, postsWithScore, postsWithDistance
+    let helpedPosts, helpedCategories, postsWithScore, postsWithDistance, times
     if (!title || !urgency || !category || !distance) {
         return res.status(400).json({ error: 'Missing query parameter'})
     }
@@ -57,6 +57,10 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:postsMode
                 }
             })
             helpedCategories = new Set(helpedPosts.map(post => post.category))
+            times = new Map()
+            helpedPosts.forEach(post => {
+            times.set(post.category, (times.get(post.category) || 0) + 1)
+            })
         }
 
         const distanceNum = parseFloat(distance)
@@ -143,7 +147,7 @@ router.get('/posts/filterby/:query/:category/:distance/:userId/:postsMode', asyn
     let urgencyBool = true
     let categoryBool = true
     let distanceBool = true
-    let helpedPosts, helpedCategories, postsWithScore, postsWithDistance
+    let helpedPosts, helpedCategories, postsWithScore, postsWithDistance, times
     if (!urgency) {
         return res.status(400).json({ error: 'Missing query parameter'})
     }
@@ -163,7 +167,6 @@ router.get('/posts/filterby/:query/:category/:distance/:userId/:postsMode', asyn
             distance = 10000
         }
         if(postsMode === 'recomendedMode') {
-            console.log("Jfilter")
             helpedPosts = await prisma.post.findMany({
                 where: {
                     volunteer_id: userId
@@ -173,6 +176,10 @@ router.get('/posts/filterby/:query/:category/:distance/:userId/:postsMode', asyn
                 }
             })
             helpedCategories = new Set(helpedPosts.map(post => post.category))
+            times = new Map()
+            helpedPosts.forEach(post => {
+            times.set(post.category, (times.get(post.category) || 0) + 1)
+            })
         }
         const distanceNum = parseFloat(distance)
         const nearbyUsers = await prisma.distances.findMany({
@@ -225,10 +232,9 @@ router.get('/posts/filterby/:query/:category/:distance/:userId/:postsMode', asyn
         })
 
         if(postsMode === 'recomendedMode'){
-            console.log("H")
             postsWithScore = posts.map(post => {
                 const distance = distanceMap.get(post.creator.user_id) ?? 9999
-                const score = recommendationScore(post, helpedCategories, distance)
+                const score = recommendationScore(post, helpedCategories, distance, times)
                 return {...post, distance, score }
             })
             postsWithScore.sort((a, b) => b.score - a.score)
@@ -376,7 +382,7 @@ router.put('/posts/:id/complete', isAuthenticated, async (req, res) => {
     }
 })
 
-// Recommended posts
+// Recommended posts TC
 router.get('/posts/recommended/:userId', async (req, res) => {
     const userId = parseInt(req.params.userId)
     try {
@@ -387,6 +393,10 @@ router.get('/posts/recommended/:userId', async (req, res) => {
             select: {
                 category: true
             }
+        })
+        const times = new Map()
+        helpedPosts.forEach(post => {
+            times.set(post.category, (times.get(post.category) || 0) + 1)
         })
         const helpedCategories = new Set(helpedPosts.map(post => post.category))
         const distances = await prisma.distances.findMany({
@@ -422,7 +432,7 @@ router.get('/posts/recommended/:userId', async (req, res) => {
 
         const postsWithScore = candidatePosts.map(post => {
             const distance = distanceMap.get(post.creator.user_id) ?? 9999
-            const score = recommendationScore(post, helpedCategories, distance)
+            const score = recommendationScore(post, helpedCategories, distance, times)
             return {...post, distance, score }
         })
 
