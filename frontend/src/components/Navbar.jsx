@@ -54,7 +54,9 @@ export default function Navbar() {
                 </h2>
                 <div className='rightNavBar'>
                     <div className='navigationLinks'>
-                        <BsThreeDots onClick={handleMore} />
+                    <button aria-label="More options" onClick={handleMore} className="moreButton">
+                        <BsThreeDots />
+                    </button>
                     </div>
                 </div>
             </div>

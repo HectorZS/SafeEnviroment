@@ -1,31 +1,146 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
 .navBarBody {
-    display: flex;    
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
-    padding: 1rem;
-    border: 1px solid black; 
-    border-radius: 12px;
-    margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1.5rem;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  position: relative;
+  z-index: 10;
+  flex-wrap: wrap;
 }
 
-.navigationLinks {
-    display: flex;
-    margin: 0;
-    padding: 0;
-}
-
-.navigationLinks button{
-    border-radius: 10px; 
-}
 
 .leftNavBar {
-    display: flex;
-    flex-direction: column;
-    height: 100;
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
 }
 
-.rightNavBar {
-    display: flex;
-    flex-direction: column;
+
+.leftNavBar h4 {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease;
 }
+
+
+.leftNavBar h4::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 2px;
+  width: 0%;
+  background-color: #333;
+  transition: width 0.3s ease;
+}
+
+
+.leftNavBar h4:hover {
+  color: #000;
+}
+
+
+.leftNavBar h4:hover::after {
+  width: 100%;
+}
+
+
+.centerNavBar {
+  font-size: 1.2rem;
+  color: #555;
+  text-align: center;
+  flex: 1;
+}
+
+
+.rightNavBar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+
+.navigationLinks {
+  font-size: 1.5rem;
+  color: #444;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+
+.navigationLinks:hover {
+  transform: scale(1.2);
+}
+
+
+.moreButton {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 1.5rem;
+  color: #444;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .navBarBody {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+
+  .leftNavBar {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+
+  .centerNavBar {
+    text-align: left;
+    width: 100%;
+  }
+
+
+  .rightNavBar {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+
+  .optionsModalOverlay {
+    right: 1rem;
+    top: auto;
+    bottom: -10px;
+  }
+}
+
+
+
+
+
