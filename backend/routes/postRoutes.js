@@ -1,6 +1,7 @@
 const express = require('express')
 const session = require('express-session')
 const { PrismaClient } = require('../generated/prisma/index.js')
+const recommendationScore = require('../utils/recommendationScore')
 const prisma = new PrismaClient()
 const router = express.Router()
 const haversine = require('../utils/haversine')
@@ -11,18 +12,21 @@ const isAuthenticated = (req, res, next) => {
     }
     next();
 };
-// search route WITH AREA SELECTED
-router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:location/:types', async (req, res) => {
+
+// search query with both TC's
+router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:location/:types/:postsMode', async (req, res) => {
     const userId = parseInt(req.params.userId)
     const title = req.params.query
     const urgency = req.params.urgency
     const category = req.params.category
     const location = req.params.location
     const types = req.params.types
+    const postsMode = req.params.postsMode
     let urgencyBool = true
     let categoryBool = true
     let titleBool = true
     let locationBool = true
+    let postsWithScore, postsWithDistance, helpedPosts, helpedCategories, times
     if (!title || !urgency || !category) {
         return res.status(400).json({ error: 'Missing query parameter'})
     }
@@ -38,6 +42,21 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:location/
         }
         if(location === 'nolocation') {
             locationBool = false
+        }
+        if(postsMode === 'recomendedMode') {
+            helpedPosts = await prisma.post.findMany({
+                where: {
+                    volunteer_id: userId
+                }, 
+                select: {
+                    category: true
+                }
+            })
+            helpedCategories = new Set(helpedPosts.map(post => post.category))
+            times = new Map()
+            helpedPosts.forEach(post => {
+            times.set(post.category, (times.get(post.category) || 0) + 1)
+            })
         }
         if(locationBool){
             // state
@@ -166,35 +185,40 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:location/
             distanceMap.set(otherUserId, distance.distance)
         })
 
-        const postsWithDistance = posts.map(post => ({
-            ...post, 
-            distance: distanceMap.get(post.creator.user_id) ?? null
-        }))
-
-        postsWithDistance.sort((a, b) => {
-            const aDist = a.distance ?? Infinity
-            const bDist = b.distance ?? Infinity
-            return aDist - bDist
-        })
-
-        res.json(postsWithDistance)
+            if(postsMode === 'recomendedMode'){
+            postsWithScore = posts.map(post => {
+                const distance = distanceMap.get(post.creator.user_id) ?? 9999
+                const score = recommendationScore(post, helpedCategories, distance, times)
+                return {...post, distance, score }
+            })
+            postsWithScore.sort((a, b) => b.score - a.score)
+        } else {
+            postsWithDistance =  posts.map(post => ({
+                ...post, 
+                distance: distanceMap.get(post.creator.user_id) || null
+            }))
+            postsWithDistance.sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity))
+        }
+        
+        res.json(postsMode === 'recomendedMode' ? postsWithScore : postsWithDistance)
     } catch (error) {
         console.error("Error searching posts: ", error); 
         res.status(500).json({ error: 'Server error' })
     }   
 })
 
-// filter search WITH AREA SELECTED
-router.get('/posts/filterby/:query/:category/:distance/:userId/:location/:types', async (req, res) => {
+// Filter with both TC's
+router.get('/posts/filterby/:query/:category/:distance/:userId/:location/:types/:postsMode', async (req, res) => {
     const userId = parseInt(req.params.userId)
     const urgency = req.params.query
     const category = req.params.category
     const location = req.params.location
     const types = String(req.params.types)
+    const postsMode = req.params.postsMode
     let urgencyBool = true
     let categoryBool = true
     let locationBool = true
-    let where    
+    let where, postsWithScore, postsWithDistance, helpedPosts, helpedCategories, times
     try {
         if(urgency === "nourgency") {
             urgencyBool = false
@@ -204,6 +228,21 @@ router.get('/posts/filterby/:query/:category/:distance/:userId/:location/:types'
         }
         if(location === 'nolocation'){
             locationBool = false
+        }
+        if(postsMode === 'recomendedMode') {
+            helpedPosts = await prisma.post.findMany({
+                where: {
+                    volunteer_id: userId
+                }, 
+                select: {
+                    category: true
+                }
+            })
+            helpedCategories = new Set(helpedPosts.map(post => post.category))
+            times = new Map()
+            helpedPosts.forEach(post => {
+            times.set(post.category, (times.get(post.category) || 0) + 1)
+            })
         }
         // state
         if(locationBool){
@@ -333,39 +372,45 @@ router.get('/posts/filterby/:query/:category/:distance/:userId/:location/:types'
             distanceMap.set(otherUserId, distance.distance)
         })
 
-        const postsWithDistance = postsInArea.map(post => ({
-            ...post, 
-            distance: distanceMap.get(post.creator.user_id) ?? null
-        }))
 
-        postsWithDistance.sort((a, b) => {
-            const aDist = a.distance ?? Infinity
-            const bDist = b.distance ?? Infinity
-            return aDist - bDist
-        })
+         if(postsMode === 'recomendedMode'){
+            postsWithScore = postsInArea.map(post => {
+                const distance = distanceMap.get(post.creator.user_id) ?? 9999
+                const score = recommendationScore(post, helpedCategories, distance, times)
+                return {...post, distance, score }
+            })
+            postsWithScore.sort((a, b) => b.score - a.score)
+        } else {
+            postsWithDistance =  postsInArea.map(post => ({
+                ...post, 
+                distance: distanceMap.get(post.creator.user_id) || null
+            }))
+            postsWithDistance.sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity))
+        }
+       
+        res.json(postsMode === 'recomendedMode' ? postsWithScore : postsWithDistance)
 
-        res.json(postsWithDistance)
     } catch (error) {
         console.error("Error filtering posts: ", error); 
         res.status(500).json({ error: 'Server error' })
     }
 })
 
+// Search with recommended posts TC without Filtering by area TC
 
-
-// Search query WITHOUT AREA SELECTED
-
-router.get('/posts/search/:query/:urgency/:category/:distance/:userId', async (req, res) => {
+router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:postsMode', async (req, res) => {
     const userId = parseInt(req.params.userId)
     const title = req.params.query
     const urgency = req.params.urgency
     const category = req.params.category
+    const postsMode = req.params.postsMode
     let distance = req.params.distance
     const distanceMap = new Map()
     let urgencyBool = true
     let categoryBool = true
     let titleBool = true
     let distanceBool = true
+    let helpedPosts, helpedCategories, postsWithScore, postsWithDistance, times
     if (!title || !urgency || !category || !distance) {
         return res.status(400).json({ error: 'Missing query parameter'})
     }
@@ -385,6 +430,21 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId', async (r
 
         if(!distanceBool) {
             distance = 10000
+        }
+        if(postsMode === 'recomendedMode') {
+            helpedPosts = await prisma.post.findMany({
+                where: {
+                    volunteer_id: userId
+                }, 
+                select: {
+                    category: true
+                }
+            })
+            helpedCategories = new Set(helpedPosts.map(post => post.category))
+            times = new Map()
+            helpedPosts.forEach(post => {
+            times.set(post.category, (times.get(post.category) || 0) + 1)
+            })
         }
 
         const distanceNum = parseFloat(distance)
@@ -437,30 +497,41 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId', async (r
             take: 10,
         })
 
-        const postsWithDistance =  posts.map(post => ({
-            ...post, 
-            distance: distanceMap.get(post.creator.user_id) || null
-        }))
-
-        postsWithDistance.sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity))
-        res.json(postsWithDistance)
+        if(postsMode === 'recomendedMode'){
+            postsWithScore = posts.map(post => {
+                const distance = distanceMap.get(post.creator.user_id) ?? 9999
+                const score = recommendationScore(post, helpedCategories, distance, times)
+                return {...post, distance, score }
+            })
+            postsWithScore.sort((a, b) => b.score - a.score)
+        } else {
+            postsWithDistance =  posts.map(post => ({
+                ...post, 
+                distance: distanceMap.get(post.creator.user_id) || null
+            }))
+            postsWithDistance.sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity))
+        }
+       
+        res.json(postsMode === 'recomendedMode' ? postsWithScore : postsWithDistance)
     } catch (error) {
         console.error("Error searching posts: ", error); 
         res.status(500).json({ error: 'Server error' })
     }   
 })
 
-// Filter query WITHOUT AREA SELECTED
+// Filter query with recommended posts TC without filtering by area TC
 
-router.get('/posts/filterby/:query/:category/:distance/:userId', async (req, res) => {
+router.get('/posts/filterby/:query/:category/:distance/:userId/:postsMode', async (req, res) => {
     const urgency = req.params.query
     const category = req.params.category
+    const postsMode = req.params.postsMode
     let distance = req.params.distance
     const userId = parseInt(req.params.userId)
     const distanceMap = new Map()
     let urgencyBool = true
     let categoryBool = true
     let distanceBool = true
+    let helpedPosts, helpedCategories, postsWithScore, postsWithDistance, times
     if (!urgency) {
         return res.status(400).json({ error: 'Missing query parameter'})
     }
@@ -479,7 +550,21 @@ router.get('/posts/filterby/:query/:category/:distance/:userId', async (req, res
         if(!distanceBool) {
             distance = 10000
         }
-
+        if(postsMode === 'recomendedMode') {
+            helpedPosts = await prisma.post.findMany({
+                where: {
+                    volunteer_id: userId
+                }, 
+                select: {
+                    category: true
+                }
+            })
+            helpedCategories = new Set(helpedPosts.map(post => post.category))
+            times = new Map()
+            helpedPosts.forEach(post => {
+            times.set(post.category, (times.get(post.category) || 0) + 1)
+            })
+        }
         const distanceNum = parseFloat(distance)
         const nearbyUsers = await prisma.distances.findMany({
             where: {
@@ -531,14 +616,22 @@ router.get('/posts/filterby/:query/:category/:distance/:userId', async (req, res
             }, 
         })
 
-        const postsWithDistance =  posts.map(post => ({
-            ...post, 
-            distance: distanceMap.get(post.creator.user_id) || null
-        }))
-
-        postsWithDistance.sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity))
-
-        res.json(postsWithDistance)
+        if(postsMode === 'recomendedMode'){
+            postsWithScore = posts.map(post => {
+                const distance = distanceMap.get(post.creator.user_id) ?? 9999
+                const score = recommendationScore(post, helpedCategories, distance, times)
+                return {...post, distance, score }
+            })
+            postsWithScore.sort((a, b) => b.score - a.score)
+        } else {
+            postsWithDistance =  posts.map(post => ({
+                ...post, 
+                distance: distanceMap.get(post.creator.user_id) || null
+            }))
+            postsWithDistance.sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity))
+        }
+        
+        res.json(postsMode === 'recomendedMode' ? postsWithScore : postsWithDistance)
     } catch (error) {
         console.error("Error filtering posts: ", error); 
         res.status(500).json({ error: 'Server error' })
@@ -674,99 +767,65 @@ router.put('/posts/:id/complete', isAuthenticated, async (req, res) => {
     }
 })
 
-// location filter TC
-
-router.get('/posts/by-location/:search/:types', async (req, res) => {
-    const search = String(req.params.search)
-    const types = String(req.params.types)
-    const userId = req.session?.user?.user_id
-    let where
+// Recommended posts TC
+router.get('/posts/recommended/:userId', async (req, res) => {
+    const userId = parseInt(req.params.userId)
     try {
-        // state
-        if(types.includes("administrative_area_level_1")){
-            where = {
-                    user_id: {
-                        not: userId, 
-                    }, 
-                    OR: [
-                        {
-                            administrativeArea: {
-                            path: ['long_name'],
-                            string_contains: search,
-                            },
-                        },
-                        {
-                            administrativeArea: {
-                            path: ['short_name'],
-                            string_contains: search,
-                            },
-                        },
-                    ],
-                }
-        }
-        else if(types.includes("locality")){
-            // city
-            where = {
-                    user_id: {
-                        not: userId, 
-                    }, 
-                    OR: [
-                        {
-                            locality: {
-                            path: ['long_name'],
-                            string_contains: search,
-                            },
-                        },
-                        {
-                            locality: {
-                            path: ['short_name'],
-                            string_contains: search,
-                            },
-                        },
-                    ],
-                }
-        }
-        else {
-            // route
-            where = {
-                    user_id: {
-                        not: userId, 
-                    }, 
-                    address: { contains : search}
-                }
-        }
-
-
-        const allUsers = await prisma.user.findMany({
-            where,
+        const helpedPosts = await prisma.post.findMany({
+            where: {
+                volunteer_id: userId
+            }, 
             select: {
-                user_id: true, 
+                category: true
             }
         })
-        const allUsersIds = allUsers.map(user => user.user_id)
-        const postsInArea = await prisma.post.findMany({
+        const times = new Map()
+        helpedPosts.forEach(post => {
+            times.set(post.category, (times.get(post.category) || 0) + 1)
+        })
+        const helpedCategories = new Set(helpedPosts.map(post => post.category))
+        const distances = await prisma.distances.findMany({
             where: {
-            creator: {
-                user_id: {
+                OR: [
+                    { userA_id: userId }, 
+                    { userB_id: userId }
+                ]
+            }
+        })
+        const distanceMap = new Map()
+        const nearbyUsersIds = new Set()
+        distances.forEach(distance => {
+            const otherUserId = distance.userA_id === userId ? distance.userB_id : distance.userA_id
+            distanceMap.set(otherUserId, distance.distance)
+            nearbyUsersIds.add(otherUserId)
+        })
+
+        const candidatePosts = await prisma.post.findMany({
+            where: {
+                creator_id: {
                     not: userId, 
-                    in: allUsersIds
+                    in: [...nearbyUsersIds]
+                }, 
+                status: {
+                    not: "completed"
                 }
             }, 
-            status: {
-                not: "completed"
-            }
-            },
             include: {
                 creator: true
-            }, 
-            orderBy: {
-                created_at: 'desc'
             }
         })
-        res.json(postsInArea)
+
+        const postsWithScore = candidatePosts.map(post => {
+            const distance = distanceMap.get(post.creator.user_id) ?? 9999
+            const score = recommendationScore(post, helpedCategories, distance, times)
+            return {...post, distance, score }
+        })
+
+        postsWithScore.sort((a, b) => b.score - a.score)
+        res.json(postsWithScore)
     } catch (error) {
-        console.error("Error while searching for places: ", error)
-        res.status(500).json({ error: "Internal server error" });
+        console.error("Error in recommendation: ", error)
+        res.status(500).json({ error: "Server error"})
     }
 })
 
