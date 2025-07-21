@@ -1,6 +1,5 @@
 import './InitialPage.css'
 import Navbar from './Navbar.jsx'
-// import Map from './CreateMap.jsx'
 import Map from './UserMap.jsx'
 import Post from './Post.jsx'
 import { useUser } from '../context/UserContext.jsx'
@@ -10,6 +9,7 @@ import { useState, useEffect } from 'react'
 export default function InitialPage(){
     const { user, setUser } = useUser(); 
     const [posts, setPosts] = useState(null);
+    const [volunteeredPosts, setVolunteeredPosts] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -21,6 +21,23 @@ export default function InitialPage(){
             .catch(error => console.error('Error fetching posts:', error))
         };
         fetchData();
+    }, []);
+
+
+    useEffect(() => {
+    const fetchVolunteeredPosts = async () => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_URL}/volunteered-posts`, {
+                credentials: "include",
+            });
+            const data = await response.json();
+            setVolunteeredPosts(data);
+        } catch (error) {
+            console.error("Error fetching volunteered posts:", error);
+        }
+    };
+
+    fetchVolunteeredPosts();
     }, []);
 
 
@@ -107,10 +124,34 @@ export default function InitialPage(){
                 </div>
                 <div className='rightPart'>
                     {loadCurrentRight()}
+                    <div className='bottom'>
+                    <h2>Posts where you've helped</h2>
+                    {volunteeredPosts.length > 0 ? (
+                        <div className="helpedPostsGrid">
+                            {volunteeredPosts.map((post) => (
+                                <div className="helpedPostCard" key={post.post_id}>
+                                    <Post
+                                        postId={post.post_id}
+                                        creator={post.creator.username}
+                                        title={post.title}
+                                        category={post.category}
+                                        description={post.description}
+                                        urgency={post.urgency}
+                                        status={post.status}
+                                        address={post.creator.address}
+                                        createdAt={post.created_at}
+                                        canDelete={false}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                        ) : (
+                            <p style={{ marginTop: "1rem", fontStyle: "italic" }}>
+                                You haven't helped with any posts yet.
+                            </p>
+                        )}
+                    </div>
                 </div>
-            </div>
-            <div className='bottom'>
-
             </div>
         </div>
     )

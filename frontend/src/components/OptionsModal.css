@@ -1,0 +1,50 @@
+.optionsModalOverlay {
+  position: absolute;
+  top: 60px;
+  right: 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  padding: 0.8rem 0;
+  z-index: 999;
+  min-width: 180px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.options div {
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #333;
+  transition: background-color 0.2s ease;
+}
+
+.options div:hover {
+  background-color: #f3f3f3;
+}
+
+.options div:last-child {
+  border-top: 1px solid #eee;
+}
+
+.optionsModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+}
+
+.options {
+  position: absolute;
+  top: 3rem;
+  right: 1rem;
+  background: rgb(255, 255, 255);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+

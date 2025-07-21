@@ -877,5 +877,33 @@ router.delete('/posts/:id', isAuthenticated, async (req, res) => {
     }
 })
 
+router.get('/volunteered-posts', async (req, res) => {
+   const userId = req.session?.user?.user_id;
+
+   if (!userId) {
+       return res.status(401).json({ error: 'Unauthorized' });
+   }
+
+   try {
+       const userWithHelpedPosts = await prisma.user.findUnique({
+           where: { user_id: userId },
+           include: {
+               volunteeredPosts: {
+                   include: {
+                       creator: true 
+                   },
+                   orderBy: {
+                       created_at: 'desc'
+                   }
+               }
+           }
+       });
+
+       res.json(userWithHelpedPosts.volunteeredPosts);
+   } catch (error) {
+       console.error("Error fetching volunteered posts:", error);
+       res.status(500).json({ error: "Internal Server Error" });
+   }
+});
 
 module.exports = router
