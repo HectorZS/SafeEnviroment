@@ -4,7 +4,6 @@ function recommendationScore(post, categoriesHelped, distance, times) {
     const urgencyWeight = URGENCY_WEIGHTS[post.urgency?.toLowerCase()] || 0
     score += urgencyWeight * 10
     if (categoriesHelped.has(post.category)) {
-        // score += 20
         score += (10 * times.get(post.category))
     }
 
