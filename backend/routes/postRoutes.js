@@ -814,8 +814,7 @@ router.get('/posts/recommended/:userId', async (req, res) => {
                 status: {
                     not: "completed"
                 },
-               inHelp: false
-                },
+               inHelp: false           
             }, 
             include: {
                 creator: true
