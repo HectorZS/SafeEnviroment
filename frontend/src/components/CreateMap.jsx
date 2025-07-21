@@ -11,15 +11,16 @@ import {
 } from "@vis.gl/react-google-maps";
 const API_KEY = globalThis.GOOGLE_MAPS_API_KEY ?? import.meta.env.VITE_MAPS_API_KEY;
 
-const CreateMap = ({ onBoundsSelected }) => {
+const CreateMap = ({ /* onBoundsSelected*/ onPlaceChange }) => {
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [markerRef, marker] = useAdvancedMarkerRef();
 
     useEffect(() => {
-        if (!selectedPlace?.geometry?.location || !onBoundsSelected) return;
-        const placeTypes = selectedPlace.types || []
-        const location = selectedPlace.name 
-        onBoundsSelected({ location, placeTypes });
+        if (!selectedPlace?.geometry?.location || !onPlaceChange) return;
+        // const placeTypes = selectedPlace.types || []
+        // const location = selectedPlace.name 
+        // onBoundsSelected({ location, placeTypes });
+        onPlaceChange(selectedPlace)
     }, [selectedPlace]);
 
 

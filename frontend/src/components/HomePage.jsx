@@ -254,7 +254,6 @@ export default function HomePage(){
                 areaModal && (
                     <SelectAreaModal
                         onClose={() => setAreaModal(false)}
-                        // onPostsLoad={handleLocationPostsLoad}
                         onBoundSet={handleBoundsSelect}
                         filters={{
                             urgency: urgencyQuery, 
