@@ -1,6 +1,5 @@
 import './InitialPage.css'
 import Navbar from './Navbar.jsx'
-// import Map from './CreateMap.jsx'
 import Map from './UserMap.jsx'
 import Post from './Post.jsx'
 import { useUser } from '../context/UserContext.jsx'
@@ -23,6 +22,27 @@ export default function InitialPage(){
         fetchData();
     }, []);
 
+
+    const handleToggleInHelp = async (postId, currentState) => {
+        try {
+            const res = await fetch(`${import.meta.env.VITE_URL}/posts/${postId}/in-help`, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ inHelp: !currentState })
+            })
+
+            if (!res.ok) throw new Error("Failed to update post")
+
+            const updatedPost = await res.json()
+
+            setPosts(prev =>
+            prev.map(p => (p.post_id === postId ? updatedPost : p))
+            )
+        } catch (err) {
+            console.error(err)
+        }
+    }
 
 
     const handleOnDelete = (post_id) => {
@@ -83,6 +103,8 @@ export default function InitialPage(){
                     onComplete={handleOnComplete}
                     address={post.creator.address}
                     createdAt={post.created_at}
+                    onToggleInHelp={handleToggleInHelp}
+                    inHelp={post.inHelp}
                 />                    
             </div>
         ));

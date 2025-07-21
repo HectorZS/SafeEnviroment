@@ -2,3 +2,60 @@
     height: 100%;
     width: 100%;
 }
+.inhelp-button {
+  position: relative;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.inhelp-button:hover {
+  background-color: #e0e0e0;
+}
+
+.inhelp-button.active {
+  background-color: #4caf50;
+  color: white;
+  border-color: #4caf50;
+}
+
+.inhelp-button::after {
+  content: "";
+  position: absolute;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 100%;
+  transform: scale(0);
+  opacity: 0;
+  pointer-events: none;
+  animation: none;
+}
+
+.inhelp-button:active::after {
+  width: 200%;
+  height: 200%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  animation: ripple 0.4s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+
+
