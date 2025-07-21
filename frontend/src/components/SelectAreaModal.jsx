@@ -28,7 +28,7 @@ export default function SelectAreaModal({ onClose, onBoundSet }) {
         <div className='area-footer'>
           <button className='area-cancel' onClick={onClose}>Cancel</button>
           <button className='area-submit' onClick={handleSubmit} disabled={!selectedPlace}>
-            Submit
+            Search posts
           </button>
         </div>
       </div>

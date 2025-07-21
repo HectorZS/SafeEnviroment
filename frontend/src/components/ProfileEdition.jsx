@@ -100,10 +100,10 @@ export default function ProfileEdition() {
                <div className='address-banner'>
                     Selected address:
                     <div className="address-display">
-                        {formData.address || "Ninguna dirección seleccionada"}
+                        {formData.address || "No address selected"}
                     </div>
                </div>
-               <CreateMap onPlaceSelect={handleSelectedPlace} />
+               <CreateMap onPlaceSelect={handleSelectedPlace}/>
                <button type="submit">Save changes</button>
            </form>
        </div>
