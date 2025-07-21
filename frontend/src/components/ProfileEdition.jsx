@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import CreateMap from '../authentication/SetLocationMap';
+import { HiArrowCircleLeft } from "react-icons/hi";
 import './ProfileEdition.css';
 
 export default function ProfileEdition() {
@@ -77,7 +78,8 @@ export default function ProfileEdition() {
 
    return (
        <div className="edit-profile-container">
-           <h2>Editar Perfil</h2>
+            <HiArrowCircleLeft style={{ fontSize: '2rem', color: 'black', marginLeft: '25px', width: '3vw', height: '3vw', display: "block"}} onClick={() => {navigate('/profilecenter')}}/>
+           <h2>Edit profile</h2>
            <form onSubmit={handleSubmit} className="edit-profile-form">
                <div>
                    <label>Username:</label>
