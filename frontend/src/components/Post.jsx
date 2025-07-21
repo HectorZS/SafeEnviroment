@@ -2,7 +2,7 @@ import './Post.css'
 import { useState } from 'react'
 import VolunteerModal from './VolunteerModal'
 
-export default function Post({ creator, title, category, description, urgency, status, onDelete, onContact, isHome, onComplete, postId, distance, address, createdAt}){
+export default function Post({ creator, title, category, description, urgency, status, onDelete, onContact, isHome, onComplete, postId, distance, address, createdAt, canDelete = true}){
     const [showVolunteerModal, setShowVolunteerModal] = useState(false)
 
     const dateObj = typeof createdAt === 'string' ? new Date(createdAt) : createdAt;
@@ -12,7 +12,7 @@ export default function Post({ creator, title, category, description, urgency, s
         day: 'numeric',
         hour: 'numeric',
         minute: '2-digit',
-        hour12: true, // Use 12-hour clock with AM/PM
+        hour12: true, 
     });
 
     const handleOnCompleteClick = () => {
@@ -59,8 +59,12 @@ export default function Post({ creator, title, category, description, urgency, s
             </div>
             <div className='buttons'>
                 {!isHome && (
-                    <>
-                        <button className="delete-button" onClick={onDelete}>Delete</button>
+                    <>  
+                        {
+                            canDelete && (
+                            <button className="delete-button" onClick={onDelete}>Delete</button>
+                            )
+                        }
                         {status !== 'completed' && (
                             <button className='complete-button' onClick={handleOnCompleteClick}>Mark as completed</button>
                         )}
