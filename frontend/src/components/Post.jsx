@@ -2,7 +2,7 @@ import './Post.css'
 import { useState } from 'react'
 import VolunteerModal from './VolunteerModal'
 
-export default function Post({ creator, title, category, description, urgency, status, onDelete, onContact, isHome, onComplete, postId, distance, address, createdAt, canDelete = true}){
+export default function Post({ creator, title, category, description, urgency, status, onDelete, onContact, isHome, onComplete, postId, distance, address, createdAt, onToggleInHelp, inHelp, canDelete = true}){
     const [showVolunteerModal, setShowVolunteerModal] = useState(false)
 
     const dateObj = typeof createdAt === 'string' ? new Date(createdAt) : createdAt;
@@ -22,6 +22,10 @@ export default function Post({ creator, title, category, description, urgency, s
     const handleCompleteWithVolunteer = (postId, volunteerId) => {
         onComplete(postId, volunteerId)
         setShowVolunteerModal(false)
+    }
+
+    const handleToggleInHelp = () => {
+        onToggleInHelp(postId, inHelp)
     }
 
     return (
@@ -67,6 +71,14 @@ export default function Post({ creator, title, category, description, urgency, s
                         }
                         {status !== 'completed' && (
                             <button className='complete-button' onClick={handleOnCompleteClick}>Mark as completed</button>
+                        )}
+                        {status !== 'completed' && (
+                            <button
+                            className={`inhelp-button ${inHelp ? 'active' : ''}`}
+                            onClick={handleToggleInHelp}
+                            >
+                            {inHelp ? 'Marked as In Help' : 'Mark as In Help'}
+                            </button>
                         )}
                     </>
                     )}

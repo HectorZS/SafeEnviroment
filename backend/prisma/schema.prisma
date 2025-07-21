@@ -45,6 +45,7 @@ model Post {
     created_at         DateTime  @default(now())
     creator_id         Int
     volunteer_id       Int?
+    inHelp             Boolean @default(false)
     creator            User     @relation("PostToCreator", fields: [creator_id], references: [user_id])
     volunteer          User?    @relation("PostToVolunteer", fields: [volunteer_id], references: [user_id])
 }

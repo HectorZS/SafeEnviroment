@@ -162,7 +162,8 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:location/
                 category: categoryBool ? {contains: category} : {}, 
                 status: {
                     not: "completed"
-                }
+                }, 
+                inHelp: false
             },
             include: {creator: true},
             orderBy: {
@@ -346,7 +347,8 @@ router.get('/posts/filterby/:query/:category/:distance/:userId/:location/:types/
             ...(categoryBool ? { category: {contains: category} }: {}), 
             status: {
                 not: "completed"
-            }
+            }, 
+            inHelp: false
             },
             include: {
                 creator: true
@@ -488,7 +490,8 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:postsMode
                 category: categoryBool ? {contains: category} : {}, 
                 status: {
                     not: "completed"
-                }
+                }, 
+                inHelp: false
             },
             include: {creator: true},
             orderBy: {
@@ -605,7 +608,8 @@ router.get('/posts/filterby/:query/:category/:distance/:userId/:postsMode', asyn
             ...(categoryBool ? { category: {contains: category} }: {}), 
             status: {
                 not: "completed"
-            }
+            }, 
+            inHelp: false
         };
 
         const posts = await prisma.post.findMany({
@@ -671,7 +675,8 @@ router.get('/homepage/posts', async (req, res) => {
                 },
                 status: {
                     not: "completed"
-                }
+                }, 
+                inHelp: false
             },
             include: {creator: true}, 
             orderBy: {
@@ -808,7 +813,9 @@ router.get('/posts/recommended/:userId', async (req, res) => {
                 }, 
                 status: {
                     not: "completed"
-                }
+                },
+               inHelp: false
+                },
             }, 
             include: {
                 creator: true
@@ -875,6 +882,32 @@ router.delete('/posts/:id', isAuthenticated, async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: "Failed to delete post" })
     }
+})
+
+router.put('/posts/:postId/in-help', async (req, res) => {
+  const postId = parseInt(req.params.postId)
+  const { inHelp } = req.body
+  const userId = req.session?.user?.user_id
+  if (!userId) return res.status(401).json({ error: "Unauthorized" })
+  try {
+    const post = await prisma.post.findUnique({ 
+        where: { 
+            post_id: postId
+         } 
+        }
+    )
+    if (!post) return res.status(404).json({ error: "Post not found" })
+    if (post.creator_id !== userId) return res.status(403).json({ error: "Forbidden" })
+    const updated = await prisma.post.update({
+      where: { post_id: postId },
+      data: { inHelp }, 
+      include: { creator: true}
+    })
+    res.json(updated)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: "Error updating inHelp" })
+  }
 })
 
 router.get('/volunteered-posts', async (req, res) => {
