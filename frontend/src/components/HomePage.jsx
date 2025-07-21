@@ -18,6 +18,7 @@ export default function HomePage(){
     const [locationName, setLocationName] = useState(null)
     const [locationMap, setLocationMap] = useState('nolocation') // new const
     const [placeTypes, setPlaceTypes] = useState('notypes') // new const
+    const [postsMode, setPostsMode] = useState('normalMode')
     const isHome = true
     const navigate = useNavigate();
 
@@ -39,9 +40,9 @@ export default function HomePage(){
         try {
             let response
             if(locationMap === 'nolocation') {
-                response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${distanceQuery}/${user.user_id}`);
+                response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${distanceQuery}/${user.user_id}/${postsMode}`);
             } else {
-                response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${distanceQuery}/${user.user_id}/${locationMap}/${placeTypes}`);
+                response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${distanceQuery}/${user.user_id}/${locationMap}/${placeTypes}/${postsMode}`);
             }
             const data = await response.json();
             setPosts(data);
@@ -58,9 +59,9 @@ export default function HomePage(){
         try {
             let response
             if(locationMap === 'nolocation') {
-                response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${distanceQuery}/${user.user_id}`);
+                response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${distanceQuery}/${user.user_id}/${postsMode}`);
             } else {
-                response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${distanceQuery}/${user.user_id}/${locationMap}/${placeTypes}`)
+                response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${distanceQuery}/${user.user_id}/${locationMap}/${placeTypes}/${postsMode}`)
             }
             const data = await response.json();
             setPosts(data);
@@ -76,9 +77,9 @@ export default function HomePage(){
         try {
             let response
             if (locationMap === 'nolocation') {
-                response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${distanceQuery}/${user.user_id}`);
+                response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${distanceQuery}/${user.user_id}/${postsMode}`);
             } else {
-                response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${distanceQuery}/${user.user_id}/${locationMap}/${placeTypes}`)
+                response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${distanceQuery}/${user.user_id}/${locationMap}/${placeTypes}/${postsMode}`)
             }
             const data = await response.json();
             setPosts(data);
@@ -93,7 +94,7 @@ export default function HomePage(){
         setDistanceQuery(e.target.value)
         setSearch(''); // Clear search input
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${categoryQuery}/${e.target.value}/${user.user_id}`);
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${categoryQuery}/${e.target.value}/${user.user_id}/${postsMode}`);
             const data = await response.json();
             setPosts(data);
         } catch (error) {
@@ -111,8 +112,9 @@ export default function HomePage(){
         setLocationMap('nolocation')
         setPlaceTypes('notypes')
         setLocationName(null)
+        setPostsMode('normalMode')
          try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/nourgency/nocategory/nodistance/${user.user_id}`);
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/nourgency/nocategory/nodistance/${user.user_id}/normalMode`);
             const data = await response.json();
             setPosts(data);
         } catch (error) {
@@ -152,12 +154,30 @@ export default function HomePage(){
         setPlaceTypes(placeTypes) // new constant
         setSearch(''); // Clear search input
         try {
-            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${categoryQuery}/${distanceQuery}/${user.user_id}/${location}/${placeTypes}`, {
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${categoryQuery}/${distanceQuery}/${user.user_id}/${location}/${placeTypes}/${postsMode}`, {
             credentials: 'include' })
             const data = await response.json()
             handleLocationPostsLoad(data, location)
         } catch (error) {
         console.error('Search error:', error);
+        }
+    }
+
+    const handleOnRecommended = async (e) => {
+        e.preventDefault()
+        setSearch(''); // Clear search input
+        setCategoryQuery('nocategory')
+        setUrgencyQuery('nourgency')
+        setDistanceQuery('nodistance')
+        setPostsMode('recomendedMode')
+        setLocationName(null)
+        setLocationMap('nolocation')
+        try {
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/recommended/${user.user_id}`);
+            const data = await response.json()
+            setPosts(data)
+        } catch (error) {
+
         }
     }
 
@@ -198,6 +218,14 @@ export default function HomePage(){
                 />
                 <button type="submit" onClick={handleSearch}>Search</button>
                 <button type="sumbit" onClick={handleClear}>Clear filter fields</button>
+                <button type="sumbit" onClick={handleOnRecommended}>Recommended posts</button>
+                {
+                    postsMode === 'recomendedMode' && (
+                        <div className='recomendedModeBanner'>
+                            Showing recomended posts
+                        </div>
+                    )                    
+                }
             </form>
             <div className='categoryButtons'>
                 <select
@@ -254,7 +282,6 @@ export default function HomePage(){
                 areaModal && (
                     <SelectAreaModal
                         onClose={() => setAreaModal(false)}
-                        // onPostsLoad={handleLocationPostsLoad}
                         onBoundSet={handleBoundsSelect}
                         filters={{
                             urgency: urgencyQuery, 

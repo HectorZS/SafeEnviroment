@@ -27,6 +27,7 @@ const CreateMap = ({ onPlaceSelect }) => {
       apiKey={API_KEY}
       solutionChannel="GMP_devsite_samples_v3_rgmautocomplete"
     >
+      <div style={{ height: "400px", width: "100%"}}>
       <Map
         mapId={"bf51a910020fa25a"}
         defaultZoom={3}
@@ -36,6 +37,7 @@ const CreateMap = ({ onPlaceSelect }) => {
       >
         <AdvancedMarker ref={markerRef} position={null} />
       </Map>
+      </div>
       <MapControl position={ControlPosition.TOP}>
         <div className="autocomplete-control">
           <PlaceAutocomplete onPlaceSelect={setSelectedPlace} />

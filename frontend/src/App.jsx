@@ -7,6 +7,7 @@ import CreatePostForm from './components/CreatePostForm.jsx';
 import HomePage from './components/HomePage.jsx';
 import ChatRoom from './components/ChatRoom.jsx';
 import NoChats from './components/skeletons/NoChats.jsx';
+import ProfileEdition from './components/ProfileEdition.jsx';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/homepage" element={<HomePage/>}/>
           <Route path="/chatrooms/no-chats" element={<NoChats/>}/>
           <Route path="/chatrooms/:chatroomId" element={<ChatRoom/>}/>
+          <Route path="/users/edit-profile" element={<ProfileEdition/>}/>
         </Routes>
       </Router>
   )
