@@ -68,7 +68,7 @@ export default function Post({ creator, title, category, description, urgency, s
                         {status !== 'completed' && (
                             <button className='complete-button' onClick={handleOnCompleteClick}>Mark as completed</button>
                         )}
-                         {location.pathname === '/profilecenter' && status !== 'completed' && (
+                        {status !== 'completed' && (
                             <button
                             className={`inhelp-button ${inHelp ? 'active' : ''}`}
                             onClick={handleToggleInHelp}
