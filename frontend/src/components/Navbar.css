@@ -24,3 +24,8 @@
     flex-direction: column;
     height: 100;
 }
+
+.rightNavBar {
+    display: flex;
+    flex-direction: column;
+}

@@ -1,0 +1,120 @@
+/* EditProfile.css */
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.edit-profile-container {
+  max-width: 450px;
+  margin: 60px auto;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.6s ease;
+  transition: transform 0.3s;
+}
+
+.edit-profile-container:hover {
+  transform: translateY(-2px);
+}
+
+.edit-profile-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+  font-size: 26px;
+}
+
+.edit-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.edit-profile-form label {
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 4px;
+  display: block;
+  transition: color 0.3s ease;
+}
+
+.edit-profile-form input {
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.edit-profile-form input:focus {
+  border-color: #4f46e5;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+.edit-profile-form button {
+  padding: 12px 0;
+  background: linear-gradient(to right, #4f46e5, #6366f1);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.edit-profile-form button:hover {
+  background: linear-gradient(to right, #4338ca, #6366f1);
+  transform: translateY(-1px);
+}
+
+.edit-profile-form button:active {
+  transform: scale(0.98);
+}
+
+/* Animación de entrada */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsivo */
+@media (max-width: 500px) {
+  .edit-profile-container {
+    margin: 30px 20px;
+    padding: 20px;
+  }
+
+  .edit-profile-container h2 {
+    font-size: 22px;
+  }
+
+  .edit-profile-form input,
+  .edit-profile-form button {
+    font-size: 14px;
+  }
+}
+
+
+.address-banner {
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+.address-display {
+  padding: 0.75rem;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+}
+

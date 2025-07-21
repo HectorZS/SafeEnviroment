@@ -2,25 +2,35 @@ import './Navbar.css'
 import { useState } from 'react';
 import { useUser } from '../context/UserContext'
 import { useNavigate } from 'react-router-dom';
-export default function Navbar(){
+import { BsThreeDots } from "react-icons/bs";
+import OptionsModal from './OptionsModal';
+
+
+export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false)
-    const { user, setUser } = useUser(); 
-    let navigate = useNavigate(); 
+    const { user, setUser } = useUser();
+    const navigate = useNavigate();
 
 
     const handleLogout = async () => {
         await fetch(`${import.meta.env.VITE_URL}/logout`, { method: "POST", credentials: "include" });
         setUser(null);
-        navigate("/"); 
+        navigate("/");
     };
+
+
+    const handleMore = () => {
+        setIsOpen(!isOpen)
+    }
+
 
     return (
         <div>
             <div className='navBarBody'>
                 <div className='leftNavBar'>
-                    <h4 onClick={() => {navigate('/homepage')}}>Homepage</h4>
-                    <h4 onClick={() => {navigate('/profilecenter')}}>Profile center</h4>
-                    <h4 onClick={() => {navigate('/create-post')}}>Create post</h4>
+                    <h4 onClick={() => { navigate('/homepage') }}>Homepage</h4>
+                    <h4 onClick={() => { navigate('/profilecenter') }}>Profile center</h4>
+                    <h4 onClick={() => { navigate('/create-post') }}>Create post</h4>
                     <h4 onClick={
                         async () => {
                             try {
@@ -28,12 +38,12 @@ export default function Navbar(){
                                     credentials: "include",
                                 })
                                 const data = await response.json()
-                                if(data.length > 0) {
+                                if (data.length > 0) {
                                     navigate(`/chatrooms/${data[0].chat_id}`)
                                 } else {
                                     navigate('/chatrooms/no-chats')
                                 }
-                            } catch (error) {
+                          } catch (error) {
                                 console.error("Error fetching chatrooms: ", error)
                             }
                         }
@@ -44,11 +54,17 @@ export default function Navbar(){
                 </h2>
                 <div className='rightNavBar'>
                     <div className='navigationLinks'>
-
-                        <button onClick={handleLogout}>Log Out</button>
+                        <BsThreeDots onClick={handleMore} />
                     </div>
                 </div>
             </div>
+            <OptionsModal
+                open={isOpen}
+                closeModal={() => setIsOpen(false)}
+                handleLogout={handleLogout}
+            />
         </div>
     )
 }
+
+

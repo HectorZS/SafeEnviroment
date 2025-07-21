@@ -1,6 +1,5 @@
 import './InitialPage.css'
 import Navbar from './Navbar.jsx'
-// import Map from './CreateMap.jsx'
 import Map from './UserMap.jsx'
 import Post from './Post.jsx'
 import { useUser } from '../context/UserContext.jsx'
