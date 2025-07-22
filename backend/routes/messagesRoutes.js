@@ -24,4 +24,31 @@ router.post('/chatrooms/:id/messages', isAuthenticated, async (req, res) => {
     }
 })
 
+router.put('/chatrooms/:chatId/mark-as-viewed', isAuthenticated, async (req, res) => {
+    try {
+        const userId = req.session.user.user_id;
+        const chatId = parseInt(req.params.chatId);
+
+        await prisma.message.updateMany({
+            where: {
+                chat_id: chatId,
+                sender_id: {
+                    not: userId
+                },
+                viewed: false
+            },
+            data: {
+                viewed: true
+            }
+        });
+
+        res.status(200).json({ message: "Messages marked as viewed" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error marking messages as viewed" });
+    }
+});
+
+
+
 module.exports = router

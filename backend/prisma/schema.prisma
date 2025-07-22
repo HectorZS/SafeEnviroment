@@ -66,9 +66,11 @@ model Message {
   sender_id            Int
   content              String
   createdAt            DateTime @default(now())
+  viewed               Boolean  @default(false) 
   chat                 Chat      @relation(fields: [chat_id], references: [chat_id])
   sender               User      @relation(fields: [sender_id], references: [user_id])
 }
+
 
 model Distances {
   id                   Int      @id @default(autoincrement())
