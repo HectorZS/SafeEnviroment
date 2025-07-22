@@ -8,9 +8,20 @@ import HomePage from './components/HomePage.jsx';
 import ChatRoom from './components/ChatRoom.jsx';
 import NoChats from './components/skeletons/NoChats.jsx';
 import ProfileEdition from './components/ProfileEdition.jsx';
+import {
+  QueryClient,
+  QueryClientProvider,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+
+const queryClient = new QueryClient()
 
 function App() {
   return (
+    <QueryClientProvider client={queryClient}>
       <Router>
         <Routes>
           <Route path="/" element={<LoginForm/>}/>
@@ -23,6 +34,7 @@ function App() {
           <Route path="/users/edit-profile" element={<ProfileEdition/>}/>
         </Routes>
       </Router>
+    </QueryClientProvider>
   )
 }
 

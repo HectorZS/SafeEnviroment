@@ -1,13 +1,27 @@
 .sideBarChat {
     display: grid;
-    grid-template-columns: 400px;
-    border: 1px solid
+    grid-template-columns: 100%;
 }
 
 .chat {
     display: flex;
     flex-direction: column;
-    align-items: center;    
+    align-items: baseline;   
     height: 100px;
+    width: 100%;
     border: 1px solid black; 
+    border-radius: 16px;
+}
+
+.name {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.circleRead {
+    margin-top: 5px;
+}
+
+.lastMessage {
+    margin-left: 5px;
 }

@@ -62,6 +62,9 @@ export default function InitialPage(){
     }
 
     const handleOnDelete = (post_id) => {
+         if (!window.confirm("Are you sure you want to delete this post?")){
+            return
+        }
         fetch(`${import.meta.env.VITE_URL}/posts/${post_id}`, {
             method: 'DELETE', 
             credentials: 'include', 
