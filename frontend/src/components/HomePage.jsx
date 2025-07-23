@@ -16,8 +16,8 @@ export default function HomePage(){
     const [distanceQuery, setDistanceQuery] = useState('nodistance')
     const [areaModal, setAreaModal] = useState(false)
     const [locationName, setLocationName] = useState(null)
-    const [locationMap, setLocationMap] = useState('nolocation') // new const
-    const [placeTypes, setPlaceTypes] = useState('notypes') // new const
+    const [locationMap, setLocationMap] = useState('nolocation')
+    const [placeTypes, setPlaceTypes] = useState('notypes')
     const [postsMode, setPostsMode] = useState('normalMode')
     const isHome = true
     const navigate = useNavigate();
@@ -189,15 +189,15 @@ export default function HomePage(){
                     creator={post.creator.username}
                     title={post.title}
                     category={post.category}
-                    description={post.description}
                     urgency={post.urgency}
                     status={post.status}
                     distance={post.distance}
+                    address={post.creator.address}
+                    createdAt={post.created_at}
+                    post={post}
                     onDelete={() => handleOnDelete(post.post_id)}
                     onContact={() => handleOnContact(post.creator.user_id)}
                     isHome={isHome}
-                    address={post.creator.address}
-                    createdAt={post.created_at}
                 />                    
             </div>
         ));

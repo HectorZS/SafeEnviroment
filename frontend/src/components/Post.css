@@ -1,61 +1,85 @@
-.post {
-    height: 100%;
+.simple-post {
     width: 100%;
-}
-.inhelp-button {
-  position: relative;
-  overflow: hidden;
-  background-color: #f0f0f0;
-  color: #333;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
+    height: 100%;
+    border: 1px solid hsl(0, 0%, 0%);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
 }
 
-.inhelp-button:hover {
-  background-color: #e0e0e0;
+.post-image-section {
+    height: 75%;
+    position: relative;
 }
 
-.inhelp-button.active {
-  background-color: #4caf50;
-  color: white;
-  border-color: #4caf50;
+.simple-post-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.inhelp-button::after {
-  content: "";
-  position: absolute;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 100%;
-  transform: scale(0);
-  opacity: 0;
-  pointer-events: none;
-  animation: none;
+.urgency-tag {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff4444;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
 }
 
-.inhelp-button:active::after {
-  width: 200%;
-  height: 200%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(1);
-  opacity: 1;
-  animation: ripple 0.4s ease-out;
+.post-info-section {
+    height: 25%;
+    padding: 10px;
+    background-color: #f9f9f9;
 }
 
-@keyframes ripple {
-  0% {
-    transform: translate(-50%, -50%) scale(0);
-    opacity: 0.5;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0;
-  }
+.post-info-section h3 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
+.post-info-section p {
+    margin: 2px 0;
+    font-size: 12px;
+    color: #555;
+}
 
+.post-buttons {
+    display: flex;
+    margin-top: 8px;
+    gap: 5px;
+}
 
+.simple-button {
+    flex: 1;
+    padding: 5px;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.delete-btn {
+    background-color: #ffdddd;
+    color: #cc0000;
+}
+
+.complete-btn {
+    background-color: #ddffdd;
+    color: #007700;
+}
+
+.inhelp-btn {
+    background-color: #ddddff;
+    color: #0000cc;
+}
+
+.inhelp-btn.active {
+    background-color: #0000cc;
+    color: white;
+}

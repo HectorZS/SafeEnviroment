@@ -7,18 +7,14 @@ import {
     InfoWindow
 } from "@vis.gl/react-google-maps"
 
-export default function CreateMap(){
+export default function MapPostModal({ creator }){
     const [open, setOpen] = useState(false)
-    const { user, setUser } = useUser(); 
-    if (!user) {
-        return <p>Loading...</p>
-    }
-    const position = { lat: Number(user.latitude), lng: Number(user.longitude)}
-
+   
+    const position = creator ? { lat: Number(creator.latitude), lng: Number(creator.longitude)} : {lat: 0, lng: 0}
     return (
         <APIProvider apiKey={import.meta.env.VITE_MAPS_API_KEY}>
-            <div style={{height: "100%", width: "100%", borderRadius: "12px"}}>
-                <Map zoom={16} center={position} mapId={import.meta.env.VITE_MAP_ID}>
+            <div style={{height: "100%", width: "100%" }}>
+                <Map zoom={17} center={position} mapId={import.meta.env.VITE_MAP_ID}>
                     <AdvancedMarker position={position} onClick={() => setOpen(true)}></AdvancedMarker>
                     {open && (
                         <InfoWindow position={position} onCloseClick={() => setOpen(false)}>
