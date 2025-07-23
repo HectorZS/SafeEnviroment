@@ -81,7 +81,7 @@ export default function Post({ creator, title, category, urgency, status, onDele
                 {status !== 'completed' && (
                     <button className='simple-button complete-btn' onClick={handleOnCompleteClick}
                     >
-                    Complete
+                    Mark as completed
                     </button>
                 )}
 
