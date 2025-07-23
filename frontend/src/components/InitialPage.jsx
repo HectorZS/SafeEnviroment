@@ -4,12 +4,14 @@ import Map from './UserMap.jsx'
 import Post from './Post.jsx'
 import { useUser } from '../context/UserContext.jsx'
 import { useState, useEffect } from 'react'
+import { useNavigate } from "react-router-dom";
 
 
 export default function InitialPage(){
     const { user, setUser } = useUser(); 
     const [posts, setPosts] = useState(null);
     const [volunteeredPosts, setVolunteeredPosts] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -107,10 +109,28 @@ export default function InitialPage(){
     }
 
 
+    const handleOnContact = async (targetUserId) => {
+        try {
+            const postResponse = await fetch(`${import.meta.env.VITE_URL}/chatrooms`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userOneId: targetUserId, userTwoId: user.user_id }),
+                credentials: "include",
+            });
+
+            const postData = await postResponse.json();
+            const chatroomId = postData.chat_id;
+            navigate(`/chatrooms/${chatroomId}`);
+        } catch (error) {
+            console.error('Error creating or retrieving chatroom:', error);
+        }
+    };
+
     const loadCurrentPosts = () => {
         return posts.map((post) => (
-            <div className='postOverview' key={post.post_id}>
+            <div className='postOverviewInitial' key={post.post_id}>
                 <Post
+                    post={post}
                     postId={post.post_id}
                     creator={post.creator.username}
                     title={post.title}
@@ -155,6 +175,7 @@ export default function InitialPage(){
                             {volunteeredPosts.map((post) => (
                                 <div className="helpedPostCard" key={post.post_id}>
                                     <Post
+                                        post={post}
                                         postId={post.post_id}
                                         creator={post.creator.username}
                                         title={post.title}
@@ -165,6 +186,7 @@ export default function InitialPage(){
                                         address={post.creator.address}
                                         createdAt={post.created_at}
                                         canDelete={false}
+                                        onContact={() => handleOnContact(post.creator.user_id)}
                                     />
                                 </div>
                             ))}

@@ -910,32 +910,59 @@ router.put('/posts/:postId/in-help', async (req, res) => {
 })
 
 router.get('/volunteered-posts', async (req, res) => {
-   const userId = req.session?.user?.user_id;
+  const userId = req.session?.user?.user_id;
 
-   if (!userId) {
-       return res.status(401).json({ error: 'Unauthorized' });
-   }
 
-   try {
-       const userWithHelpedPosts = await prisma.user.findUnique({
-           where: { user_id: userId },
-           include: {
-               volunteeredPosts: {
-                   include: {
-                       creator: true 
-                   },
-                   orderBy: {
-                       created_at: 'desc'
-                   }
-               }
-           }
-       });
+  if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+  }
 
-       res.json(userWithHelpedPosts.volunteeredPosts);
-   } catch (error) {
-       console.error("Error fetching volunteered posts:", error);
-       res.status(500).json({ error: "Internal Server Error" });
-   }
+
+  try {
+      const distances = await prisma.distances.findMany({
+          where: {
+              OR: [
+                  { userA_id: userId },
+                  { userB_id: userId }
+              ]
+          }
+      });
+
+
+      const distanceMap = new Map();
+      distances.forEach(dist => {
+          const otherId = dist.userA_id === userId ? dist.userB_id : dist.userA_id;
+          distanceMap.set(otherId, dist.distance);
+      });
+
+
+      const userWithHelpedPosts = await prisma.user.findUnique({
+          where: { user_id: userId },
+          include: {
+              volunteeredPosts: {
+                  include: {
+                      creator: true,
+                      volunteer: true
+                  },
+                  orderBy: {
+                      created_at: 'desc'
+                  }
+              }
+          }
+      });
+
+
+      const postsWithDistance = userWithHelpedPosts.volunteeredPosts.map(post => ({
+          ...post,
+          distance: distanceMap.get(post.creator.user_id) ?? null
+      }));
+
+
+      res.json(postsWithDistance);
+  } catch (error) {
+      console.error("Error fetching volunteered posts:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 module.exports = router
