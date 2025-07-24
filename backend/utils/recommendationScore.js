@@ -20,7 +20,11 @@ async function calculateBaseScore(post, categoriesHelped, distance, times) {
     { max: 1, bonus: 40 },
     { max: 3, bonus: 30 },
     { max: 10, bonus: 20 },
-    { max: 50, bonus: 10 }
+    { max: 50, bonus: 10 },
+    { max: 500, bonus: 9 },
+    { max: 1000, bonus: 7 },
+    { max: 5000, bonus: 5 },
+    { max: 10000, bonus: 1 },
   ];
 
   if (typeof distance === 'number') {
