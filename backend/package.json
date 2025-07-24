@@ -11,6 +11,9 @@
   "description": "",
   "dependencies": {
     "@prisma/client": "^6.10.1",
+    "@tensorflow-models/universal-sentence-encoder": "^1.3.3",
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-node": "^4.22.0",
     "axios": "^1.10.0",
     "bcrypt": "^6.0.0",
     "connect-redis": "^9.0.0",

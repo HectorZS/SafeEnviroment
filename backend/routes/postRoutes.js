@@ -49,7 +49,9 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:location/
                     volunteer_id: userId
                 }, 
                 select: {
-                    category: true
+                    category: true, 
+                    title: true, 
+                    description: true
                 }
             })
             helpedCategories = new Set(helpedPosts.map(post => post.category))
@@ -187,11 +189,12 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:location/
         })
 
             if(postsMode === 'recomendedMode'){
-            postsWithScore = posts.map(post => {
+            postsWithScore = [] // changed this code because i needed to handle the promises in order secuentially
+            for (const post of posts) {
                 const distance = distanceMap.get(post.creator.user_id) ?? 9999
-                const score = recommendationScore(post, helpedCategories, distance, times)
-                return {...post, distance, score }
-            })
+                const score = await recommendationScore(post, helpedCategories, distance, times, helpedPosts, "search with location")
+                postsWithScore.push({...post, distance, score})
+            }
             postsWithScore.sort((a, b) => b.score - a.score)
         } else {
             postsWithDistance =  posts.map(post => ({
@@ -236,7 +239,9 @@ router.get('/posts/filterby/:query/:category/:distance/:userId/:location/:types/
                     volunteer_id: userId
                 }, 
                 select: {
-                    category: true
+                    category: true, 
+                    title: true, 
+                    description: true
                 }
             })
             helpedCategories = new Set(helpedPosts.map(post => post.category))
@@ -376,11 +381,12 @@ router.get('/posts/filterby/:query/:category/:distance/:userId/:location/:types/
 
 
          if(postsMode === 'recomendedMode'){
-            postsWithScore = postsInArea.map(post => {
+            postsWithScore = [] // changed this code because i needed to handle the promises in order secuentially
+            for (const post of postsInArea) {
                 const distance = distanceMap.get(post.creator.user_id) ?? 9999
-                const score = recommendationScore(post, helpedCategories, distance, times)
-                return {...post, distance, score }
-            })
+                const score = await recommendationScore(post, helpedCategories, distance, times, helpedPosts, "fiiltering with area")
+                postsWithScore.push({...post, distance, score})
+            }
             postsWithScore.sort((a, b) => b.score - a.score)
         } else {
             postsWithDistance =  postsInArea.map(post => ({
@@ -439,7 +445,9 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:postsMode
                     volunteer_id: userId
                 }, 
                 select: {
-                    category: true
+                    category: true, 
+                    title: true, 
+                    description: true
                 }
             })
             helpedCategories = new Set(helpedPosts.map(post => post.category))
@@ -501,11 +509,12 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:postsMode
         })
 
         if(postsMode === 'recomendedMode'){
-            postsWithScore = posts.map(post => {
+            postsWithScore = [] // changed this code because i needed to handle the promises in order secuentially
+            for (const post of posts) {
                 const distance = distanceMap.get(post.creator.user_id) ?? 9999
-                const score = recommendationScore(post, helpedCategories, distance, times)
-                return {...post, distance, score }
-            })
+                const score = await recommendationScore(post, helpedCategories, distance, times, helpedPosts, "search without location")
+                postsWithScore.push({...post, distance, score})
+            }
             postsWithScore.sort((a, b) => b.score - a.score)
         } else {
             postsWithDistance =  posts.map(post => ({
@@ -559,7 +568,9 @@ router.get('/posts/filterby/:query/:category/:distance/:userId/:postsMode', asyn
                     volunteer_id: userId
                 }, 
                 select: {
-                    category: true
+                    category: true, 
+                    title: true, 
+                    description: true
                 }
             })
             helpedCategories = new Set(helpedPosts.map(post => post.category))
@@ -621,11 +632,12 @@ router.get('/posts/filterby/:query/:category/:distance/:userId/:postsMode', asyn
         })
 
         if(postsMode === 'recomendedMode'){
-            postsWithScore = posts.map(post => {
+            postsWithScore = [] // changed this code because i needed to handle the promises in order secuentially
+            for (const post of posts) {
                 const distance = distanceMap.get(post.creator.user_id) ?? 9999
-                const score = recommendationScore(post, helpedCategories, distance, times)
-                return {...post, distance, score }
-            })
+                const score = await recommendationScore(post, helpedCategories, distance, times, helpedPosts, "filtering without location")
+                postsWithScore.push({...post, distance, score})
+            }
             postsWithScore.sort((a, b) => b.score - a.score)
         } else {
             postsWithDistance =  posts.map(post => ({
@@ -772,69 +784,68 @@ router.put('/posts/:id/complete', isAuthenticated, async (req, res) => {
     }
 })
 
-// Recommended posts TC
 router.get('/posts/recommended/:userId', async (req, res) => {
-    const userId = parseInt(req.params.userId)
+    const userId = parseInt(req.params.userId);
     try {
         const helpedPosts = await prisma.post.findMany({
-            where: {
-                volunteer_id: userId
-            }, 
-            select: {
-                category: true
-            }
-        })
-        const times = new Map()
+            where: { volunteer_id: userId },
+            select: { category: true, title: true, description: true}    //     select: { title: true, description: true }
+        });
+
+        const helpedCategories = new Set(helpedPosts.map(post => post.category));
+        const times = new Map();
         helpedPosts.forEach(post => {
-            times.set(post.category, (times.get(post.category) || 0) + 1)
-        })
-        const helpedCategories = new Set(helpedPosts.map(post => post.category))
+            times.set(post.category, (times.get(post.category) || 0) + 1);
+        });
         const distances = await prisma.distances.findMany({
             where: {
                 OR: [
-                    { userA_id: userId }, 
+                    { userA_id: userId },
                     { userB_id: userId }
                 ]
             }
-        })
-        const distanceMap = new Map()
-        const nearbyUsersIds = new Set()
+        });
+        const distanceMap = new Map();
+        const nearbyUsersIds = new Set();
+        
         distances.forEach(distance => {
-            const otherUserId = distance.userA_id === userId ? distance.userB_id : distance.userA_id
-            distanceMap.set(otherUserId, distance.distance)
-            nearbyUsersIds.add(otherUserId)
-        })
+            const otherUserId = distance.userA_id === userId ? distance.userB_id : distance.userA_id;
+            distanceMap.set(otherUserId, distance.distance);
+            nearbyUsersIds.add(otherUserId);
+        });
 
         const candidatePosts = await prisma.post.findMany({
             where: {
                 creator_id: {
-                    not: userId, 
+                    not: userId,
                     in: [...nearbyUsersIds]
-                }, 
-                status: {
-                    not: "completed"
                 },
-               inHelp: false           
-            }, 
-            include: {
-                creator: true
-            }
-        })
+                status: { not: "completed" },
+                inHelp: false
+            },
+            include: { creator: true }
+        });
 
-        const postsWithScore = candidatePosts.map(post => {
-            const distance = distanceMap.get(post.creator.user_id) ?? 9999
-            const score = recommendationScore(post, helpedCategories, distance, times)
-            return {...post, distance, score }
-        })
-
-        postsWithScore.sort((a, b) => b.score - a.score)
-        res.json(postsWithScore)
+        const postsWithScore = await Promise.all(
+            candidatePosts.map(async post => ({
+                ...post,
+                distance: distanceMap.get(post.creator.user_id) ?? 9999,
+                score: await recommendationScore(
+                    post, 
+                    helpedCategories, 
+                    distanceMap.get(post.creator.user_id) ?? 9999, 
+                    times,
+                    helpedPosts
+                )
+            }))
+        );
+        postsWithScore.sort((a, b) => b.score - a.score);
+        res.json(postsWithScore);
     } catch (error) {
-        console.error("Error in recommendation: ", error)
-        res.status(500).json({ error: "Server error"})
+        console.error("Error in recommendation:", error);
+        res.status(500).json({ error: "Server error" });
     }
-})
-
+});
 
 // Create posts
 
