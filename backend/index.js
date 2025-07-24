@@ -1,4 +1,5 @@
 require("dotenv").config();
+process.env.TF_CPP_MIN_LOG_LEVEL = '2'
 const express = require('express');
 const cors = require('cors');
 const app = express();

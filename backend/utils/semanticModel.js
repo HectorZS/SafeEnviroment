@@ -1,3 +1,4 @@
+process.env.TF_CPP_MIN_LOG_LEVEL = '2'
 const tf = require('@tensorflow/tfjs-node');
 const use = require('@tensorflow-models/universal-sentence-encoder');
 
@@ -54,7 +55,6 @@ const getSemanticSimilarity = async (text1, text2) => {
     
     // Clean up tensors
     tf.dispose([embeddings, emb1, emb2]);
-    
     return Math.max(-1, Math.min(1, similarity)); // Clamp between -1 and 1
   } catch (err) {
     console.error('Similarity calculation error:', err.message);
