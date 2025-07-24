@@ -1,4 +1,4 @@
-process.env.TF_CPP_MIN_LOG_LEVEL = '2'
+process.env.TF_CPP_MIN_LOG_LEVEL = '2' // added to avoid warnigs in production while using tensorflow
 const tf = require('@tensorflow/tfjs-node');
 const use = require('@tensorflow-models/universal-sentence-encoder');
 
@@ -24,7 +24,6 @@ const loadModel = async () => {
 
 const getSemanticSimilarity = async (text1, text2) => {
   if (!text1 || !text2) return 0;
-  console.log(`Text 1: ${text1} | Text 2: ${text2}`)
   try {
     await loadModel();
     

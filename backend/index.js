@@ -1,5 +1,5 @@
 require("dotenv").config();
-process.env.TF_CPP_MIN_LOG_LEVEL = '2'
+process.env.TF_CPP_MIN_LOG_LEVEL = '2' // added to avoid warnigs in production while using tensorflow
 const express = require('express');
 const cors = require('cors');
 const app = express();

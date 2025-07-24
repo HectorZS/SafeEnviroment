@@ -61,7 +61,6 @@ async function recommendationScore(post, categoriesHelped, distance, times, help
       );
       maxSimilarity = Math.max(maxSimilarity, similarity || 0);
     }
-    console.log(`---------- Max similarity for ${post.title}: ${maxSimilarity} ------------`)
     return baseScore + (maxSimilarity * 50);
   } catch (err) {
     console.error('Recommendation score error:', err.message);
