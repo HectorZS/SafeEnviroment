@@ -21,7 +21,7 @@
     font-size: 26px;
 }
 
-.back-button {
+.back-button-post {
     position: absolute;
     top: 20px;
     left: 20px;
@@ -33,7 +33,7 @@
     border: none;
 }
 
-.back-button:hover {
+.back-button-post:hover {
     color: #ff4444;
     transform: scale(1.1);
 }

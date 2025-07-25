@@ -44,7 +44,7 @@ export default function CreatePostForm(){
     return (
         <div className="create-post-container">
             <HiArrowCircleLeft 
-                className="back-button"
+                className="back-button-post"
                 onClick={() => {navigate('/profilecenter')}}
             />
             <h2>Create new post</h2>
