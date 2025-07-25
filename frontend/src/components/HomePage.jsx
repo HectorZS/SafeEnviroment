@@ -266,7 +266,7 @@ export default function HomePage(){
             </div>
         ));
     };
-    return (
+   return (
     <div className='homePage'>
         <Navbar/>
         <main>
@@ -333,7 +333,7 @@ export default function HomePage(){
                 <option value="Social & Community Engagement">Social & Community Engagement</option>
             </select>
             
-            {locationMap === 'nolocation' && (
+            {locationMap === 'nolocation' && !polygonMode && (
                 <select
                 className="filter-select"
                 value={distanceQuery}
@@ -345,58 +345,36 @@ export default function HomePage(){
                 <option value={10}>10 km</option>
                 <option value={50}>50 km</option>
                 </select>
-                }
-                {   !polygonMode &&
-                    <button onClick={handleOnClickArea}>Select area</button>
-                }
-                {
-                    locationName && (
-                        <div className='location-banner'>
-                            Showing results for: <strong>{locationName}</strong>
-                        </div>
-                    )
-                }
-                {   locationMap === 'nolocation' && 
-                    <button onClick={handleOnClickPolygon}>Select polygon</button>
-                }
-                 {
-                    polygonMode && (
-                        <div className='polygonModeBanner'>
-                            Polygon Mode
-                        </div>
-                    )                    
-                }
-            </div>
-            <div className='postsHomePage'>
-                {posts && user ? loadCurrentPosts() : "Loading..."}
-            </div>
-            {
-                areaModal && (
-                    <SelectAreaModal
-                        onClose={() => setAreaModal(false)}
-                        onBoundSet={handleBoundsSelect}
-                        filters={{
-                            urgency: urgencyQuery, 
-                            category: categoryQuery, 
-                            distance: distanceQuery
-                            }
-                        }
-                    />
-                )
+            )}
+            { !polygonMode && 
+                <button 
+                    className="action-button" 
+                    onClick={handleOnClickArea}
+                >
+                    Select area
+                </button>
             }
-            {
-                polygonModal && user && (
-                    <PolygonMapModal
-                        onClose={() => setPolygonModal(false)}
-                        userId={user.user_id}
-                        onPolygonSelected={handlePolygonSelected}
-                    />
-                )
-            }
-        </main>
+            { locationMap === 'nolocation' &&
+                <button
+                className='polygonModeButton'
+                onClick={handleOnClickPolygon}
+            >
+                Polygon mode
+            </button>
+            }   
 
+            {polygonMode && (
+                <div className='polygonModeBanner'>
+                    Polygon mode
+                </div>
+            )}
+            {locationName && (
+                <div className='location-banner'>
+                Showing results for: <strong>{locationName}</strong>
+                </div>
+            )}
+            </div>
         </div>
-
 
         <div className='postsHomePage'>
             {posts && user ? loadCurrentPosts() : "Loading..."}
@@ -413,6 +391,15 @@ export default function HomePage(){
             }}
             />
         )}
+          {
+                polygonModal && user && (
+                    <PolygonMapModal
+                        onClose={() => setPolygonModal(false)}
+                        userId={user.user_id}
+                        onPolygonSelected={handlePolygonSelected}
+                    />
+                )
+            }
         </main>
         <Footer/>
     </div>
