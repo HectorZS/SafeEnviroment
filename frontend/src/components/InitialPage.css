@@ -11,7 +11,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 510px;
+    height: 550px;
     padding: 10px;
 }
 .center {
@@ -28,7 +28,6 @@
     height: 850px;
     justify-content: center;
     overflow-y: auto;
-    /* flex-grow: 1; */
 }
 
 .leftPart::-webkit-scrollbar {
