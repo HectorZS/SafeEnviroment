@@ -20,11 +20,11 @@ export default function Post({ creator, title, category, urgency, status, onDele
 
     const getCategoryImage = () => {
         const categoryImages = {
-        'Pet Care': '../../assets/pet-care.jpg',
-        'Tool & Equipment Lending': '../../assets/tool-and-equipment.jpg',
-        'Errands & Assistance': '../../assets/errands.jpeg',
-        'Home & Yard Help': '../../assets/yard-help.jpg',
-        'Social & Community Engagement': '../../assets/community.avif'
+        'Pet Care' : 'https://media.istockphoto.com/id/1388816698/photo/happy-pet-sitters-enjoying-with-group-of-dogs-during-a-walk-in-the-park.jpg?s=612x612&w=0&k=20&c=AxT0OZol2z6ogIOapwdI5hPRR-WI0tdFksxqIg94sIc=',
+        'Tool & Equipment Lending': 'https://images.squarespace-cdn.com/content/v1/52717f08e4b079ec23e2b627/0e5b33ae-2bdf-421f-9f7d-73843e066100/DSC_3216-24.jpg',
+        'Errands & Assistance': 'https://www.theworkathomewoman.com/wp-content/uploads/A-young-woman-getting-paid-to-run-errands.jpeg',
+        'Home & Yard Help': 'https://www.uab.edu/news/images/photos/2025/summer/Five_tips_for_yard_work_safety_01.jpg',
+        'Social & Community Engagement': 'https://www.funflicks.com/wp-content/uploads/2024/04/how-to-throw-a-block-party.jpg'
         };
 
         return categoryImages[category]
@@ -57,7 +57,7 @@ export default function Post({ creator, title, category, urgency, status, onDele
             alt={category}
             className='simple-post-image'
             />
-            <div className='urgency-tag'>{urgency}</div>
+            <div className={`urgency-tag ${urgency.toLowerCase()}`}>{urgency}</div>
         </div>
         <div className='post-info-section'>
             <h3>{title}</h3>

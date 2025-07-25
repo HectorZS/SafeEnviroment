@@ -4,18 +4,21 @@ import { useUser } from '../context/UserContext';
 import { Link } from 'react-router-dom'
 import CreateMap from './SetLocationMap'
 
+
 export default function SignupForm() {
     const [formData, setFormData] = useState({ email: "", username: "", password: "", address: ""})
     const { setUser } = useUser()
     const [types, setTypes] = useState('')
+
 
     function handleChange(event) {
         const { name, value } = event.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     }
 
+
     const handleSubmit = async (event) => {
-    event.preventDefault();
+        event.preventDefault();
         try {
             if(formData.email === '' || formData.username === '' || formData.password === '' || formData.address === ''){ 
                 alert("Please fill out the required fields");
@@ -26,6 +29,7 @@ export default function SignupForm() {
                 return 
             }
 
+
             const response = await fetch(`${import.meta.env.VITE_URL}/signup`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -33,10 +37,11 @@ export default function SignupForm() {
                 credentials: "include",
             });
 
+
             const data = await response.json();
             if (response.ok) {
-                setUser(data); // Store user session in context
-                window.location.href = "/profilecenter"; // Redirect to homepage
+                setUser(data);
+                window.location.href = "/profilecenter";
             } else {
                 alert(data.error)
             }
@@ -44,6 +49,7 @@ export default function SignupForm() {
             console.error("Network error:", error);
         }
     };
+
 
     const handleSelectedPlace = async ({ location, types }) => {
         setFormData(prev => ({
@@ -53,26 +59,52 @@ export default function SignupForm() {
         setTypes(types)
     }
 
+
     return (
-         <div className='overlayStyleSignup' >
-            <div className='modalBodySignup'>
+        <div className='signup-container'>
+            <div className='signup-form'>
                 <h3>Sign up</h3>
-                <label>Email</label>
-                <input type="email"  placeholder='example@domain.com' name="email" pattern=".+@example\.com" value={formData.email} onChange={handleChange}></input>
-                <label>Username</label>
-                <input type="text"  placeholder='Create username' name="username" value={formData.username} onChange={handleChange}/>
-                <label>Password</label>
-                <input type="password"  placeholder='8 characters minimum' name="password" value={formData.password} onChange={handleChange}/>
-                <label>Address</label>
-                <CreateMap onPlaceSelect={handleSelectedPlace}/>
-                <button className='submit' onClick={handleSubmit}>Sign up</button>
-                <div className="loginlink">
-                    <p>Already have an account? </p>
-                   <Link to='/'>
-                        <p>Log in</p>
-                   </Link>
-                </div>
+                <form onSubmit={handleSubmit}>
+                    <div className="signUpForm">
+                        <label>Email</label>
+                        <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="example@domain.com"
+                        />
+                    </div>
+                    <div className="signUpForm">
+                        <label>Username</label>
+                        <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="Create username"
+                        />
+                    </div>
+                    <div className="signUpForm">
+                        <label>Password</label>
+                        <input type="password"  name="password" value={formData.password} onChange={handleChange} placeholder="8 characters minimum"
+                        />
+                    </div>
+                    <div className="signUpForm">
+                        <label>Address</label>
+                        <div className="address-input">
+                            <CreateMap onPlaceSelect={handleSelectedPlace}/>
+                            {formData.address && (
+                                <div className="address-display">
+                                    {formData.address}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <button type="submit" className="submit-button">
+                        Sign up
+                    </button>
+                    <div className="login-link">
+                        <p>Already have an account?</p>
+                        <Link to='/'>
+                            <p>Log in</p>
+                        </Link>
+                    </div>
+                </form>
             </div>
         </div>
     )
 }
+
+
+

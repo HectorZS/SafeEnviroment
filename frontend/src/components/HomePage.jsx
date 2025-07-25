@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { useUser } from '../context/UserContext.jsx'
 import { useNavigate } from "react-router-dom";
 import SelectAreaModal from './SelectAreaModal.jsx'
+import Footer from './Footer.jsx'
 
 
 export default function HomePage(){
@@ -150,8 +151,8 @@ export default function HomePage(){
     }
 
     const handleBoundsSelect = async ({ location, placeTypes }) => {
-        setLocationMap(location) // new constant
-        setPlaceTypes(placeTypes) // new constant
+        setLocationMap(location) 
+        setPlaceTypes(placeTypes) 
         setSearch(''); // Clear search input
         try {
             const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${categoryQuery}/${distanceQuery}/${user.user_id}/${location}/${placeTypes}/${postsMode}`, {
@@ -202,97 +203,120 @@ export default function HomePage(){
             </div>
         ));
     };
-
     return (
-       <div className='homePage'>
+    <div className='homePage'>
         <Navbar/>
         <main>
-            <form style={{ display: 'inline-block', marginBottom: '1rem' }}>
-                <input 
-                    className="searchVar" 
-                    type="text" 
-                    placeholder='Search posts' 
+        <div className="search-filter-container">
+            <div className="search-section">
+            <div className="search-input-container">
+                <form>
+                    <input
+                    className="searchVar"
+                    type="text"
+                    placeholder='Search posts...'
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    style={{ width: '135px' }}
-                />
-                <button type="submit" onClick={handleSearch}>Search</button>
-                <button type="sumbit" onClick={handleClear}>Clear filter fields</button>
-                <button type="sumbit" onClick={handleOnRecommended}>Recommended posts</button>
-                {
-                    postsMode === 'recomendedMode' && (
-                        <div className='recomendedModeBanner'>
-                            Showing recomended posts
-                        </div>
-                    )                    
-                }
-            </form>
-            <div className='categoryButtons'>
-                <select
-                    id="category"
-                    name="category"
-                    value={urgencyQuery}
-                    onChange={handleSelect}
-                >
-                    <option value="nourgency">Urgency level</option>
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                </select>
-                <select
-                    id="category"
-                    name="category"
-                    value={categoryQuery}
-                    onChange={handleSelectCategory}
-                >
-                    <option value="nocategory">Category</option>
-                    <option value="Tool & Equipment Lending">Tool & Equipment Lending</option>
-                    <option value="Pet Care">Pet Care</option>
-                    <option value="Errands & Assistance">Errands & Assistance</option>
-                    <option value="Home & Yard Help">Home & Yard Help</option>
-                    <option value="Social & Community Engagement">Social & Community Engagement</option>
-                </select>
-                { locationMap === 'nolocation' &&
-                <select
-                    id="distance"
-                    name="distance"
-                    value={distanceQuery}
-                    onChange={handleSelectDistance}
-                >
-                    <option value="nodistance">Distance</option>
-                    <option value={1}>1 km</option>
-                    <option value={3}>3 km</option>
-                    <option value={10}>10 km</option>
-                    <option value={50}>50 km</option>
-                </select>
-                }
-                <button onClick={handleOnClickArea}>Select area</button>
-                {
-                    locationName && (
-                        <div className='location-banner'>
-                            Showing results for: <strong>{locationName}</strong>
-                        </div>
-                    )
-                }
-            </div>
-            <div className='postsHomePage'>
-                {posts && user ? loadCurrentPosts() : "Loading..."}
-            </div>
-            {
-                areaModal && (
-                    <SelectAreaModal
-                        onClose={() => setAreaModal(false)}
-                        onBoundSet={handleBoundsSelect}
-                        filters={{
-                            urgency: urgencyQuery, 
-                            category: categoryQuery, 
-                            distance: distanceQuery
-                            }
-                        }
                     />
-                )
-            }
-        </main>
+                    <button 
+                className="action-button" 
+                type="submit" 
+                onClick={handleSearch}
+            >
+                Search
+            </button>
+            <button 
+                className="action-button secondary" 
+                onClick={handleClear}
+            >
+                Clear filters
+            </button>
+            <button 
+                className="action-button secondary" 
+                onClick={handleOnRecommended}
+            >
+                Recommended
+            </button>
+                </form>
+            </div>
+            {postsMode === 'recomendedMode' && (
+                <div className='recomendedModeBanner'>
+                Showing recommended posts
+                </div>
+            )}
+            </div>
+            <div className="filter-section">
+            <select
+                className="filter-select"
+                value={urgencyQuery}
+                onChange={handleSelect}
+            >
+                <option value="nourgency">Urgency level</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+            
+            <select
+                className="filter-select"
+                value={categoryQuery}
+                onChange={handleSelectCategory}
+            >
+                <option value="nocategory">Category</option>
+                <option value="Tool & Equipment Lending">Tool & Equipment Lending</option>
+                <option value="Pet Care">Pet Care</option>
+                <option value="Errands & Assistance">Errands & Assistance</option>
+                <option value="Home & Yard Help">Home & Yard Help</option>
+                <option value="Social & Community Engagement">Social & Community Engagement</option>
+            </select>
+            
+            {locationMap === 'nolocation' && (
+                <select
+                className="filter-select"
+                value={distanceQuery}
+                onChange={handleSelectDistance}
+                >
+                <option value="nodistance">Distance</option>
+                <option value={1}>1 km</option>
+                <option value={3}>3 km</option>
+                <option value={10}>10 km</option>
+                <option value={50}>50 km</option>
+                </select>
+            )}
+            
+            <button 
+                className="action-button" 
+                onClick={handleOnClickArea}
+            >
+                Select area
+            </button>
+            
+            {locationName && (
+                <div className='location-banner'>
+                Showing results for: <strong>{locationName}</strong>
+                </div>
+            )}
+            </div>
         </div>
+
+
+        <div className='postsHomePage'>
+            {posts && user ? loadCurrentPosts() : "Loading..."}
+        </div>
+        
+        {areaModal && (
+            <SelectAreaModal
+            onClose={() => setAreaModal(false)}
+            onBoundSet={handleBoundsSelect}
+            filters={{
+                urgency: urgencyQuery,
+                category: categoryQuery,
+                distance: distanceQuery
+            }}
+            />
+        )}
+        </main>
+        <Footer/>
+    </div>
     )
 }
