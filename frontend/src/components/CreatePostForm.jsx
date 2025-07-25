@@ -1,12 +1,13 @@
-import './CreatePostForm'
-import { useState, useEffect } from 'react'
+import './CreatePostForm.css'
+import { useState } from 'react'
 import { useUser } from '../context/UserContext'
 import { useNavigate } from 'react-router-dom'
 import { HiArrowCircleLeft } from "react-icons/hi";
 
+
 export default function CreatePostForm(){
     const [formData, setFormData] = useState({ title: "", category: "", description: "", urgency: ""})
-    const { setUser } = useUser(); 
+    const { user } = useUser(); 
     let navigate = useNavigate(); 
 
     function handleChange(event) {
@@ -39,47 +40,74 @@ export default function CreatePostForm(){
             console.error("Network error. Please try again.", error);
         }
     };
-
    
     return (
-        <div className='postForm'>
-            <HiArrowCircleLeft style={{ fontSize: '2rem', color: 'black', marginLeft: '25px', width: '3vw', height: '3vw', display: "block"}} onClick={() => {navigate('/profilecenter')}}/>
-            <div className='titleForm'>
-                <h2>Create new post</h2>
-            </div>
-            <div className='buttons'>
-                <label>Title</label>
-                <input type="text" name="title" value={formData.title} onChange={handleChange}></input>
-                <label>Category</label>
-                <select
-                    id="category"
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                >
-                    <option value="">Category</option>
-                    <option value="Tool & Equipment Lending">Tool & Equipment Lending</option>
-                    <option value="Pet Care">Pet Care</option>
-                    <option value="Errands & Assistance">Errands & Assistance</option>
-                    <option value="Home & Yard Help">Home & Yard Help</option>
-                    <option value="Social & Community Engagement">Social & Community Engagement</option>
-                </select>
-                <label>Description</label>
-                <input type="text" name="description" value={formData.description} onChange={handleChange}/>
-                <label>Urgency</label>
-                <select
-                    id="urgency"
-                    name="urgency"
-                    value={formData.urgency}
-                    onChange={handleChange}
-                >
-                    <option value="">Urgency</option>
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
-                </select>
-                <button className='submit' onClick={handleSubmit}>Create post</button>
-            </div>
+        <div className="create-post-container">
+            <HiArrowCircleLeft 
+                className="back-button"
+                onClick={() => {navigate('/profilecenter')}}
+            />
+            <h2>Create new post</h2>
+            <form onSubmit={handleSubmit} className="create-post-form">
+                <div className="form-group">
+                    <label>Title</label>
+                    <input 
+                        type="text" 
+                        name="title" 
+                        value={formData.title} 
+                        onChange={handleChange}
+                        placeholder="Enter post title"
+                    />
+                </div>
+                
+                <div className="form-group">
+                    <label>Category</label>
+                    <select
+                        name="category"
+                        value={formData.category}
+                        onChange={handleChange}
+                    >
+                        <option value="">Select a category</option>
+                        <option value="Tool & Equipment Lending">Tool & Equipment Lending</option>
+                        <option value="Pet Care">Pet Care</option>
+                        <option value="Errands & Assistance">Errands & Assistance</option>
+                        <option value="Home & Yard Help">Home & Yard Help</option>
+                        <option value="Social & Community Engagement">Social & Community Engagement</option>
+                    </select>
+                </div>
+                
+                <div className="form-group">
+                    <label>Description</label>
+                    <textarea 
+                        name="description" 
+                        value={formData.description} 
+                        onChange={handleChange}
+                        placeholder="Describe what you need help with"
+                        rows="4"
+                    />
+                </div>
+                
+                <div className="form-group">
+                    <label>Urgency</label>
+                    <select
+                        name="urgency"
+                        value={formData.urgency}
+                        onChange={handleChange}
+                    >
+                        <option value="">Select urgency level</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+                
+                <button type="submit" className="submit-button" onClick={handleSubmit}>
+                    Create post
+                </button>
+            </form>
         </div>
     )
 }
+
+
+

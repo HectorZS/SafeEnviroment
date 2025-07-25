@@ -1,11 +1,115 @@
-
-.postForm{
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+.create-post-container {
+    max-width: 450px;
+    margin: 60px auto;
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 0.6s ease;
+    transition: transform 0.3s;
+    position: relative;
 }
 
-.buttons{
+.create-post-container:hover {
+    transform: translateY(-2px);
+}
+
+.create-post-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 26px;
+}
+
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 2rem;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: none;
+    border: none;
+}
+
+.back-button:hover {
+    color: #ff4444;
+    transform: scale(1.1);
+}
+
+.create-post-form {
     display: flex;
     flex-direction: column;
+    gap: 18px;
+}
+
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.create-post-form label {
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 8px;
+    transition: color 0.3s ease;
+}
+
+
+.create-post-form input,
+.create-post-form select,
+.create-post-form textarea {
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    width: 100%;
+    font-family: inherit;
+}
+
+
+.create-post-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+
+
+
+.create-post-form input:focus,
+.create-post-form select:focus,
+.create-post-form textarea:focus {
+    border-color: #ff4444;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.2);
+}
+
+
+.submit-button {
+    padding: 14px 0;
+    background: linear-gradient(to right, #ff4444, #ff6b6b);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+
+.submit-button:hover {
+    background: linear-gradient(to right, #e53935, #ff4444);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.2);
+}
+
+
+.submit-button:active {
+    transform: scale(0.98);
 }
