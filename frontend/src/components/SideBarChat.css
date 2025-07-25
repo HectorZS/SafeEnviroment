@@ -1,27 +1,95 @@
 .sideBarChat {
-    display: grid;
-    grid-template-columns: 100%;
+    padding: 0.5rem;
+    overflow-y: auto;
+    height: 100%;
 }
+
 
 .chat {
     display: flex;
     flex-direction: column;
-    align-items: baseline;   
-    height: 100px;
-    width: 100%;
-    border: 1px solid black; 
-    border-radius: 16px;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: white;
+    position: relative;
+    border: 1px solid black
 }
+
+
+.chat:hover {
+    background-color: #f9f9f9;
+}
+
+
+.chat.active {
+    background-color: #ffebee;
+    border-left: 3px solid #ff4444;
+}
+
+
 
 .name {
-    margin-left: 10px;
-    margin-right: 10px;
+    font-weight: 500;
+    color: #333;
+    margin: 0;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 80%;
 }
 
-.circleRead {
-    margin-top: 5px;
-}
 
 .lastMessage {
-    margin-left: 5px;
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.3rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
 }
+
+
+.circleRead {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    animation: pulse 1.5s infinite;
+}
+
+
+.time-ago {
+    font-size: 0.7rem;
+    color: #999;
+    margin-top: 0.2rem;
+}
+
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+
+.sideBarChat::-webkit-scrollbar {
+    width: 6px;
+}
+
+
+.sideBarChat::-webkit-scrollbar-thumb {
+    background-color: #e0e0e0;
+    border-radius: 3px;
+}
+
+
+.sideBarChat::-webkit-scrollbar-thumb:hover {
+    background-color: #c0c0c0;
+}
+
+
+ 

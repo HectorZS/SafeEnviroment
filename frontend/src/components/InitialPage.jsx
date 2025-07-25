@@ -5,7 +5,7 @@ import Post from './Post.jsx'
 import { useUser } from '../context/UserContext.jsx'
 import { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
-
+import Footer from './Footer.jsx'
 
 export default function InitialPage(){
     const { user, setUser } = useUser(); 
@@ -199,6 +199,7 @@ export default function InitialPage(){
                     </div>
                 </div>
             </div>
+            <Footer/>
         </div>
     )
 }
