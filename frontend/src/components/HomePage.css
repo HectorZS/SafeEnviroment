@@ -35,16 +35,17 @@
 .categoryButtons select,
 .categoryButtons button,
 .searchVar {
-    border: 1px solid #e0e0e0;
+    border: 1px solid hsl(0, 0%, 48%);
     border-radius: 6px;
     font-size: 0.95rem;
     background-color: white;
     transition: all 0.3s ease;
     outline: none;
+    height: 20px;
 }
 
 .searchVar {
-    width: 200px;
+    width: 400px;
     margin-right: 10px;
 }
 
