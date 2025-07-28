@@ -11,6 +11,7 @@ const authRouter = require('./routes/auth');
 const postRouter = require('./routes/postRoutes');
 const chatroomRouter = require('./routes/chatRoomRoutes');
 const messagesRouter = require('./routes/messagesRoutes');
+const polygonRouter = require('./routes/polygonMapsRoutes')
 const tf = require('@tensorflow/tfjs-node'); 
 const use = require('@tensorflow-models/universal-sentence-encoder');
 let model;
@@ -72,6 +73,7 @@ app.use(authRouter);
 app.use(postRouter);
 app.use(chatroomRouter);
 app.use(messagesRouter);
+app.use(polygonRouter)
 
 
 app.get('/homepage', (req, res) => {

@@ -159,7 +159,10 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:location/
                         in: allUsersIds
                     }
                 }, 
-                title: titleBool ? {contains: title} : {}, 
+                title: titleBool ? {
+                    contains: title, 
+                    mode: 'insensitive'
+                } : {}, 
                 urgency: urgencyBool ? {contains: urgency} : {}, 
                 category: categoryBool ? {contains: category} : {}, 
                 status: {
@@ -493,7 +496,10 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:postsMode
                     ...(distanceBool ? { in: nearbyUsersIds }: {})
                     }
                 }, 
-                title: titleBool ? {contains: title} : {}, 
+                title: titleBool ? {
+                    contains: title, 
+                    mode: 'insensitive'
+                } : {}, 
                 urgency: urgencyBool ? {contains: urgency} : {}, 
                 category: categoryBool ? {contains: category} : {}, 
                 status: {
@@ -523,7 +529,7 @@ router.get('/posts/search/:query/:urgency/:category/:distance/:userId/:postsMode
             }))
             postsWithDistance.sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity))
         }
-       
+
         res.json(postsMode === 'recomendedMode' ? postsWithScore : postsWithDistance)
     } catch (error) {
         console.error("Error searching posts: ", error); 

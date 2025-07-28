@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { useUser } from '../context/UserContext.jsx'
 import { useNavigate } from "react-router-dom";
 import SelectAreaModal from './SelectAreaModal.jsx'
+import PolygonMapModal from './PolygonMapModal.jsx'
 import Footer from './Footer.jsx'
 
 
@@ -20,6 +21,9 @@ export default function HomePage(){
     const [locationMap, setLocationMap] = useState('nolocation')
     const [placeTypes, setPlaceTypes] = useState('notypes')
     const [postsMode, setPostsMode] = useState('normalMode')
+    const [polygonModal, setPolygonModal] = useState(false)
+    const [polygonMode, setPolygonMode] = useState(false)
+    const [polygonPosts, setPolygonPosts] = useState([])
     const isHome = true
     const navigate = useNavigate();
 
@@ -40,9 +44,19 @@ export default function HomePage(){
         if (!search) return;
         try {
             let response
-            if(locationMap === 'nolocation') {
+            if (polygonMode) {
+                const userIds = polygonPosts.map(post => post.creator.user_id)
+                response = await fetch(`${import.meta.env.VITE_URL}/posts/by-users`, {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({userIds, urgency: urgencyQuery, category: categoryQuery, recommended: postsMode, title: search}), 
+                    credentials: 'include'
+                })
+            }
+            else if(locationMap === 'nolocation') {
                 response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${distanceQuery}/${user.user_id}/${postsMode}`);
-            } else {
+            } 
+            else {
                 response = await fetch(`${import.meta.env.VITE_URL}/posts/search/${search}/${urgencyQuery}/${categoryQuery}/${distanceQuery}/${user.user_id}/${locationMap}/${placeTypes}/${postsMode}`);
             }
             const data = await response.json();
@@ -59,9 +73,19 @@ export default function HomePage(){
         setSearch(''); // Clear search input
         try {
             let response
-            if(locationMap === 'nolocation') {
+            if (polygonMode) {
+                const userIds = polygonPosts.map(post => post.creator.user_id)
+                response = await fetch(`${import.meta.env.VITE_URL}/posts/by-users`, {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({userIds, urgency: e.target.value, category: categoryQuery, recommended: postsMode}), 
+                    credentials: 'include'
+                })
+            }
+            else if(locationMap === 'nolocation') {
                 response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${distanceQuery}/${user.user_id}/${postsMode}`);
-            } else {
+            } 
+            else {
                 response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${e.target.value}/${categoryQuery}/${distanceQuery}/${user.user_id}/${locationMap}/${placeTypes}/${postsMode}`)
             }
             const data = await response.json();
@@ -77,9 +101,19 @@ export default function HomePage(){
         setSearch(''); // Clear search input
         try {
             let response
-            if (locationMap === 'nolocation') {
+            if (polygonMode) {
+                const userIds = polygonPosts.map(post => post.creator.user_id)
+                response = await fetch(`${import.meta.env.VITE_URL}/posts/by-users`, {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({userIds: userIds, urgency: urgencyQuery, category: e.target.value, recommended: postsMode}), 
+                    credentials: 'include'
+                })
+            }
+            else if (locationMap === 'nolocation') {
                 response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${distanceQuery}/${user.user_id}/${postsMode}`);
-            } else {
+            } 
+            else {
                 response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/${urgencyQuery}/${e.target.value}/${distanceQuery}/${user.user_id}/${locationMap}/${placeTypes}/${postsMode}`)
             }
             const data = await response.json();
@@ -114,6 +148,8 @@ export default function HomePage(){
         setPlaceTypes('notypes')
         setLocationName(null)
         setPostsMode('normalMode')
+        setPolygonMode(false)
+        setPolygonPosts([])
          try {
             const response = await fetch(`${import.meta.env.VITE_URL}/posts/filterby/nourgency/nocategory/nodistance/${user.user_id}/normalMode`);
             const data = await response.json();
@@ -144,6 +180,10 @@ export default function HomePage(){
         setAreaModal(true)
     }
 
+    const handleOnClickPolygon = () => {
+        setPolygonModal(true)
+    }
+
     const handleLocationPostsLoad = (postsFromArea, name) => {
         setPosts(postsFromArea)
         setLocationName(name)
@@ -164,6 +204,27 @@ export default function HomePage(){
         }
     }
 
+    const handlePolygonSelected = async ({ users }) => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_URL}/posts/by-users`, {
+                method: 'POST', 
+                headers: { 'Content-Type' : 'application/json' }, 
+                body: JSON.stringify({ userIds: users, urgency: urgencyQuery, category: categoryQuery, recommended: postsMode }), 
+                credentials: 'include'
+            })
+
+            if (!response.ok) throw new Error('Failed to fetch posts')
+            
+            const data = await response.json()
+            setPolygonPosts(data)
+            setPosts(data)
+            setPolygonModal(false)
+            setPolygonMode(true)
+        } catch (error) {
+            console.error('Search error:', error)
+        }
+    }
+
     const handleOnRecommended = async (e) => {
         e.preventDefault()
         setSearch(''); // Clear search input
@@ -173,6 +234,8 @@ export default function HomePage(){
         setPostsMode('recomendedMode')
         setLocationName(null)
         setLocationMap('nolocation')
+        setPolygonMode(false)
+        setPolygonPosts([])
         try {
             const response = await fetch(`${import.meta.env.VITE_URL}/posts/recommended/${user.user_id}`);
             const data = await response.json()
@@ -203,7 +266,7 @@ export default function HomePage(){
             </div>
         ));
     };
-    return (
+   return (
     <div className='homePage'>
         <Navbar/>
         <main>
@@ -270,7 +333,7 @@ export default function HomePage(){
                 <option value="Social & Community Engagement">Social & Community Engagement</option>
             </select>
             
-            {locationMap === 'nolocation' && (
+            {locationMap === 'nolocation' && !polygonMode && (
                 <select
                 className="filter-select"
                 value={distanceQuery}
@@ -283,14 +346,28 @@ export default function HomePage(){
                 <option value={50}>50 km</option>
                 </select>
             )}
-            
-            <button 
-                className="action-button" 
-                onClick={handleOnClickArea}
+            { !polygonMode && 
+                <button 
+                    className="action-button" 
+                    onClick={handleOnClickArea}
+                >
+                    Select area
+                </button>
+            }
+            { locationMap === 'nolocation' &&
+                <button
+                className='polygonModeButton'
+                onClick={handleOnClickPolygon}
             >
-                Select area
+                Polygon mode
             </button>
-            
+            }   
+
+            {polygonMode && (
+                <div className='polygonModeBanner'>
+                    Polygon mode
+                </div>
+            )}
             {locationName && (
                 <div className='location-banner'>
                 Showing results for: <strong>{locationName}</strong>
@@ -298,7 +375,6 @@ export default function HomePage(){
             )}
             </div>
         </div>
-
 
         <div className='postsHomePage'>
             {posts && user ? loadCurrentPosts() : "Loading..."}
@@ -315,6 +391,15 @@ export default function HomePage(){
             }}
             />
         )}
+          {
+                polygonModal && user && (
+                    <PolygonMapModal
+                        onClose={() => setPolygonModal(false)}
+                        userId={user.user_id}
+                        onPolygonSelected={handlePolygonSelected}
+                    />
+                )
+            }
         </main>
         <Footer/>
     </div>
