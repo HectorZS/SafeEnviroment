@@ -94,7 +94,7 @@ export default function Post({ creator, title, category, urgency, status, onDele
                     <button
                     className={`simple-button inhelp-btn ${inHelp ? 'active' : ''}`} onClick={handleToggleInHelp}
                     >
-                    {inHelp ? 'In Help' : 'Need Help'}
+                    {inHelp ? 'In progress' : 'Mark as In progress'}
                     </button>
                 )}
                 </>

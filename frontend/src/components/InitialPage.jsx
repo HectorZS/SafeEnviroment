@@ -163,8 +163,16 @@ export default function InitialPage(){
                 <Navbar/>
             <div className='center'>
                 <div className='leftPart'>
-                    {user ? (posts.length > 0 ? loadCurrentPosts() :<p style={{ marginTop: "1rem", fontStyle: "italic" }}>
-                                You don't have any posts yet. Start sharing your tasks!.</p>) : "Loading..."}
+                    {user ? (posts.length > 0 ? 
+                        (                   
+                        <>
+                            <h2>Posts where you've helped</h2>
+                            {loadCurrentPosts()}
+                        </>
+                        ):
+                        <p style={{ marginTop: "1rem", fontStyle: "italic" }}>
+                                You don't have any posts yet. Start sharing your tasks!.</p>) 
+                                : "Loading..."}
                 </div>
                 <div className='rightPart'>
                     {loadCurrentRight()}

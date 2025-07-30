@@ -66,6 +66,7 @@ export default function CreatePostForm(){
                         name="category"
                         value={formData.category}
                         onChange={handleChange}
+                        style={{width: "435px"}}
                     >
                         <option value="">Select a category</option>
                         <option value="Tool & Equipment Lending">Tool & Equipment Lending</option>
@@ -93,6 +94,7 @@ export default function CreatePostForm(){
                         name="urgency"
                         value={formData.urgency}
                         onChange={handleChange}
+                        style={{width: "435px"}}
                     >
                         <option value="">Select urgency level</option>
                         <option value="high">High</option>
