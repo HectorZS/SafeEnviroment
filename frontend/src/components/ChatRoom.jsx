@@ -105,17 +105,18 @@ export default function ChatRoom() {
                     className={`message-bubble ${msg.sender_id === user.user_id ? 'you' : 'other'}`}
                 >
                     <div className="message-content">
-                    <div className='head-message'>
-                        <span className="sender">
-                            {msg.sender_id === user.user_id ? "You" : (
-                                msg.sender_id === data.userOne.user_id ? data.userOne.username : data.userTwo.username
-                            )}
-                        </span>
-                    </div>
-                    <div style={{display: "flex", gap: "5px"}}>
-                    <span className='message-text'>{msg.content}</span>
-                    <span className='time'>{handleDate(msg.createdAt)}</span>
-                    </div>
+                        <div className='head-message'>
+                            <span className="sender">
+                                {msg.sender_id === user.user_id ? "You" : (
+                                    msg.sender_id === data.userOne.user_id ? data.userOne.username : data.userTwo.username
+                                )}
+                            </span>
+                        </div>
+                        <div style={{display: "flex"}}>
+                            <span className='message-text'>{msg.content}</span>
+                            <div style={{height: "35px", width: "5px"}}></div>
+                            <span className='time'>{handleDate(msg.createdAt)}</span>
+                        </div>
                     </div>
                 </div>
                 ))}

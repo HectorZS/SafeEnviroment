@@ -2,6 +2,20 @@ import './Footer.css';
 
 
 export default function Footer() {
+
+
+  const handleOnFacebook = () => {
+    window.location.href = "https://www.facebook.com/"
+  }
+
+
+  const handleOnX = () => {
+    window.location.href = "https://x.com/"
+  }
+
+  const handleOnInstagram = () => {
+    window.location.href = "https://www.instagram.com/"
+  }
   return (
     <footer className="footer">
       <div className="footer-content">
@@ -11,16 +25,10 @@ export default function Footer() {
           <p>Phone: (123) 456-7890</p>
         </div>
         <div className="footer-section">
-          <h4>Quick Links</h4>
-          <a href="#">About Us</a>
-          <a href="#">FAQ</a>
-          <a href="#">Privacy Policy</a>
-        </div>
-        <div className="footer-section">
           <h4>Follow Us</h4>
-          <a href="#">Facebook</a>
-          <a href="#">Twitter</a>
-          <a href="#">Instagram</a>
+          <a onClick={handleOnFacebook}>Facebook</a>
+          <a onClick={handleOnX}>X</a>
+          <a onClick={handleOnInstagram}>Instagram</a>
         </div>
       </div>
       <div className="copyright">

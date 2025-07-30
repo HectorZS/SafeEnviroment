@@ -8,6 +8,7 @@ import './LoginForm.css';
 const LoginForm = () => {
     const [formData, setFormData] = useState({ email: "", username: "", password: "", latitude: null, longitude: null})
     const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false)
     const navigate = useNavigate();
     const { setUser } = useUser();
 
@@ -35,19 +36,21 @@ const LoginForm = () => {
                 credentials: "include",
             });
 
-
+            setLoading(true)
             const data = await response.json();
 
 
             if (response.ok) {
                 setMessage({ type: "success", text: "Login successful!" });
                 setUser(data); // Set the user in context with id and username
-                navigate("/profilecenter"); // Redirect to the homepage
+                navigate("/homepage"); // Redirect to the homepage
             } else {
                 alert(data.error)
             }
         } catch (error) {
             setMessage({ type: "error", text: "Network error. Please try again." });
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -73,7 +76,7 @@ const LoginForm = () => {
                         />
                     </div>
                     <button type="submit" className="submit-button">
-                        Log in
+                        {!loading ? "Log in" : "Loading..."}
                     </button>
                     <div className="signup-link">
                         <p>Don't have an account?</p>

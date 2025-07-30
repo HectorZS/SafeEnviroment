@@ -41,11 +41,10 @@
     background-color: white;
     transition: all 0.3s ease;
     outline: none;
-    height: 20px;
+    height: 30px;
 }
 
 .searchVar {
-    width: 400px;
     margin-right: 10px;
 }
 
@@ -130,9 +129,9 @@
 
 
 .searchVar {
-    width: 700px;
+    width: 900px;
     border: 1px solid #e0e0e0;
-    font-size: 0.7rem;
+    font-size: 0.9rem;
     background-color: white;
     transition: all 0.3s ease;
     outline: none;

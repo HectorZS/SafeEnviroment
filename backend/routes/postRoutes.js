@@ -670,7 +670,7 @@ router.get('/user/posts', async (req, res) => {
             where: {
                 creator_id: userId
             },  
-            include: {creator: true},
+            include: {creator: true, volunteer: true},
             orderBy: {
                 created_at: 'desc',
             }, 
@@ -696,7 +696,7 @@ router.get('/homepage/posts', async (req, res) => {
                 }, 
                 inHelp: false
             },
-            include: {creator: true}, 
+            include: {creator: true, volunteer: true}, 
             orderBy: {
                 created_at: 'desc',
             }, 

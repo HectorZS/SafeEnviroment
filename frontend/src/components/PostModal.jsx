@@ -47,6 +47,9 @@ export default function PostModal({ onClose, post, onContact }) {
                   <span className={`detail-value status-${post?.status?.toLowerCase()}`}>
                     {post?.status}
                   </span>
+                  {post?.status === 'completed' && (
+                    <span> by <strong>{post?.volunteer?.username}</strong></span>
+                  )}
                 </div>
               </div>
               <div className='post-description'>

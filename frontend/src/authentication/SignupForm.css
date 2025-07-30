@@ -30,11 +30,9 @@
     font-size: 24px;
 }
 
-
 .signUpForm {
     margin-bottom: 18px;
 }
-
 
 .signup-form label {
     display: block;
@@ -44,9 +42,8 @@
     transition: color 0.3s ease;
 }
 
-
 .signup-form input {
-    width: 100%;
+    width: 90%; 
     padding: 12px 14px;
     border: 1px solid #ccc;
     border-radius: 12px;

@@ -9,18 +9,19 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
-}
 
+}
 
 .login-form {
     background-color: #ffffff;
     border-radius: 20px;
-    padding: 30px;
+    padding: 50px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     animation: fadeInUp 0.6s ease;
     transition: transform 0.3s;
     width: 100%;
     max-width: 400px;
+    justify-content: center;
 }
 
 .login-form h3 {
@@ -30,11 +31,9 @@
     font-size: 24px;
 }
 
-
 .loginForm {
     margin-bottom: 18px;
 }
-
 
 .login-form label {
     display: block;
@@ -46,7 +45,7 @@
 
 
 .login-form input {
-    width: 100%;
+    width: 90%; 
     padding: 12px 14px;
     border: 1px solid #ccc;
     border-radius: 12px;
@@ -62,12 +61,15 @@
     border: none;
     border-radius: 12px;
     font-size: 16px;
-    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 10px;
+    padding-bottom: 5px;
 }
 
+.logintext {
+  margin-bottom: 30px;
+}
 
 .submit-button:hover {
     background: linear-gradient(to right, #e53935, #ff4444);
