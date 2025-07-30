@@ -2,10 +2,6 @@ import './Footer.css';
 
 
 export default function Footer() {
-
-  const handleOnInstagram = () => {
-    window.location.href = "https://www.instagram.com/"
-  }
   return (
     <footer className="footer">
       <div className="footer-content">
