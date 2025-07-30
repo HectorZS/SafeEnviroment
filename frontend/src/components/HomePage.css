@@ -82,8 +82,7 @@
 }
 
 .location-banner,
-.recomendedModeBanner, 
-.polygonModeBanner {
+.recomendedModeBanner{
     background-color: white;
     border-left: 4px solid #ff4444;
     font-size: 0.95rem;
@@ -95,6 +94,18 @@
     height: 5px;
 }
 
+.polygonModeBanner {
+    background-color: white;
+    border-left: 4px solid #ff4444;
+    font-size: 0.95rem;
+    color: #333;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    display: inline-flex;
+    align-items: center;
+    height: 35px;
+    width: 120px;
+}
 .homePage {
     position: relative;
 }

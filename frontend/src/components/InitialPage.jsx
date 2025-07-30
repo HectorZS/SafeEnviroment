@@ -166,7 +166,7 @@ export default function InitialPage(){
                     {user ? (posts.length > 0 ? 
                         (                   
                         <>
-                            <h2>Posts where you've helped</h2>
+                            <h2>Your posts</h2>
                             {loadCurrentPosts()}
                         </>
                         ):
