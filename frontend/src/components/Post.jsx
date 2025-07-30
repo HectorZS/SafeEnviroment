@@ -97,12 +97,6 @@ export default function Post({ creator, title, category, urgency, status, onDele
                     {inHelp ? 'In Help' : 'Need Help'}
                     </button>
                 )}
-{/* 
-                {status === 'completed' && (
-                    <span> Completed by {post.volunteer.username}</span>
-                )
-
-                } */}
                 </>
             )}
             </div>
