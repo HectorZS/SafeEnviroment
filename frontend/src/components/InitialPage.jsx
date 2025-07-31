@@ -9,7 +9,7 @@ import Footer from './Footer.jsx'
 
 export default function InitialPage(){
     const { user, setUser } = useUser(); 
-    const [posts, setPosts] = useState(null);
+    const [posts, setPosts] = useState([]);
     const [volunteeredPosts, setVolunteeredPosts] = useState([]);
     const navigate = useNavigate();
 
@@ -24,7 +24,6 @@ export default function InitialPage(){
         };
         fetchData();
     }, []);
-
 
     useEffect(() => {
     const fetchVolunteeredPosts = async () => {
@@ -164,9 +163,19 @@ export default function InitialPage(){
                 <Navbar/>
             <div className='center'>
                 <div className='leftPart'>
-                    {posts && user ? loadCurrentPosts() : "Loading..."}
+                    {user ? (posts.length > 0 ? 
+                        (                   
+                        <>
+                            <h2>Your posts</h2>
+                            {loadCurrentPosts()}
+                        </>
+                        ):
+                        <p style={{ marginTop: "1rem", fontStyle: "italic" }}>
+                                You don't have any posts yet. Start sharing your tasks!.</p>) 
+                                : "Loading..."}
                 </div>
                 <div className='rightPart'>
+                    <h3>Your location</h3>
                     {loadCurrentRight()}
                     <div className='bottom'>
                     <h2>Posts where you've helped</h2>

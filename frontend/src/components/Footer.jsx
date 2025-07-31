@@ -11,16 +11,10 @@ export default function Footer() {
           <p>Phone: (123) 456-7890</p>
         </div>
         <div className="footer-section">
-          <h4>Quick Links</h4>
-          <a href="#">About Us</a>
-          <a href="#">FAQ</a>
-          <a href="#">Privacy Policy</a>
-        </div>
-        <div className="footer-section">
           <h4>Follow Us</h4>
-          <a href="#">Facebook</a>
-          <a href="#">Twitter</a>
-          <a href="#">Instagram</a>
+          <a href="https://www.facebook.com/" target="_blank">Facebook</a>
+          <a href="https://x.com/" target='_blank'>X</a>
+          <a href='https://www.instagram.com/' target='_blank'>Instagram</a>
         </div>
       </div>
       <div className="copyright">

@@ -24,7 +24,7 @@ export default function Post({ creator, title, category, urgency, status, onDele
         'Tool & Equipment Lending': 'https://images.squarespace-cdn.com/content/v1/52717f08e4b079ec23e2b627/0e5b33ae-2bdf-421f-9f7d-73843e066100/DSC_3216-24.jpg',
         'Errands & Assistance': 'https://www.theworkathomewoman.com/wp-content/uploads/A-young-woman-getting-paid-to-run-errands.jpeg',
         'Home & Yard Help': 'https://www.uab.edu/news/images/photos/2025/summer/Five_tips_for_yard_work_safety_01.jpg',
-        'Social & Community Engagement': 'https://www.funflicks.com/wp-content/uploads/2024/04/how-to-throw-a-block-party.jpg'
+        'Social & Community Engagement': 'https://insider.augusta.edu/wp-content/uploads/sites/25/2024/01/community-service-manager-outside.jpg'
         };
 
         return categoryImages[category]
@@ -64,6 +64,10 @@ export default function Post({ creator, title, category, urgency, status, onDele
             <p>By: {creator}</p>
             <p>Category: {category}</p>
             <p>Location: {address}</p>
+            {status === 'completed' && !isHome && (
+                <strong><p> Completed by {post.volunteer.username}</p></strong>
+            )
+            }
             {distance !== undefined && distance !== null && (
             <p>Distance: {distance.toFixed(2)} km</p>
             )}
@@ -90,7 +94,7 @@ export default function Post({ creator, title, category, urgency, status, onDele
                     <button
                     className={`simple-button inhelp-btn ${inHelp ? 'active' : ''}`} onClick={handleToggleInHelp}
                     >
-                    {inHelp ? 'In Help' : 'Need Help'}
+                    {inHelp ? 'In progress' : 'Mark as In progress'}
                     </button>
                 )}
                 </>

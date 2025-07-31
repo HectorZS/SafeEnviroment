@@ -11,6 +11,7 @@ import Footer from './Footer.jsx'
 
 export default function HomePage(){
     const { user, setUser } = useUser()
+    const [loading, setLoading] = useState(false)
     const [posts, setPosts] = useState([])
     const [search, setSearch] = useState('')
     const [urgencyQuery, setUrgencyQuery] = useState('nourgency')
@@ -237,11 +238,14 @@ export default function HomePage(){
         setPolygonMode(false)
         setPolygonPosts([])
         try {
+            setLoading(true)
             const response = await fetch(`${import.meta.env.VITE_URL}/posts/recommended/${user.user_id}`);
             const data = await response.json()
             setPosts(data)
         } catch (error) {
-
+            console.error("Error: ", error)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -282,12 +286,12 @@ export default function HomePage(){
                     onChange={(e) => setSearch(e.target.value)}
                     />
                     <button 
-                className="action-button" 
-                type="submit" 
-                onClick={handleSearch}
-            >
+                    className="action-button" 
+                    type="submit" 
+                    onClick={handleSearch}
+                    >
                 Search
-            </button>
+                </button>
             <button 
                 className="action-button secondary" 
                 onClick={handleClear}
@@ -304,7 +308,7 @@ export default function HomePage(){
             </div>
             {postsMode === 'recomendedMode' && (
                 <div className='recomendedModeBanner'>
-                Showing recommended posts
+                {loading ? "Loading..." : "Showing recommended posts"}
                 </div>
             )}
             </div>

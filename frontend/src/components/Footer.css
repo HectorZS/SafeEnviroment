@@ -7,7 +7,8 @@
   padding: 0 2rem;
   border-top: 1px solid #ff4444;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
@@ -43,6 +44,10 @@
   font-size: 0.9rem;
   text-decoration: none;
   transition: color 0.2s ease;
+}
+
+.footer-section a {
+  cursor: pointer;
 }
 
 

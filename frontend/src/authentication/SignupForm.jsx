@@ -9,6 +9,7 @@ export default function SignupForm() {
     const [formData, setFormData] = useState({ email: "", username: "", password: "", address: ""})
     const { setUser } = useUser()
     const [types, setTypes] = useState('')
+    const [loading, setLoading] = useState(false)
 
 
     function handleChange(event) {
@@ -37,16 +38,18 @@ export default function SignupForm() {
                 credentials: "include",
             });
 
-
+            setLoading(true)
             const data = await response.json();
             if (response.ok) {
                 setUser(data);
-                window.location.href = "/profilecenter";
+                window.location.href = "/homepage";
             } else {
                 alert(data.error)
             }
         } catch (error) {
             console.error("Network error:", error);
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -92,7 +95,7 @@ export default function SignupForm() {
                         </div>
                     </div>
                     <button type="submit" className="submit-button">
-                        Sign up
+                        {!loading ? "Sign up" : "Loading..."}
                     </button>
                     <div className="login-link">
                         <p>Already have an account?</p>

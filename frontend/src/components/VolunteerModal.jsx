@@ -57,6 +57,7 @@ export default function VolunteerModal({ postId, onComplete, onClose }) {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <button
+            style={{cursor: "pointer"}}
             onClick={(e) => {
               e.stopPropagation()
               handleSearch()
@@ -84,6 +85,7 @@ export default function VolunteerModal({ postId, onComplete, onClose }) {
         </div>
         <div className='modal-actions'>
           <button
+            style={{cursor: "pointer"}}
             onClick={(e) => {
               e.stopPropagation()
               onClose()
@@ -92,6 +94,7 @@ export default function VolunteerModal({ postId, onComplete, onClose }) {
             Cancel
           </button>
           <button
+            style={{cursor: "pointer"}}
             onClick={(e) => {
               e.stopPropagation()
               handleSubmit()
