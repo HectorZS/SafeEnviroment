@@ -175,6 +175,7 @@ export default function InitialPage(){
                                 : "Loading..."}
                 </div>
                 <div className='rightPart'>
+                    <h3>Your location</h3>
                     {loadCurrentRight()}
                     <div className='bottom'>
                     <h2>Posts where you've helped</h2>

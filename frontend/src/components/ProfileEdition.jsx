@@ -78,7 +78,7 @@ export default function ProfileEdition() {
 
    return (
        <div className="edit-profile-container">
-            <HiArrowCircleLeft style={{ fontSize: '2rem', color: 'black', marginLeft: '25px', width: '3vw', height: '3vw', display: "block"}} onClick={() => {navigate('/profilecenter')}}/>
+            <HiArrowCircleLeft style={{ fontSize: '2rem', color: 'black', marginLeft: '25px', width: '3vw', height: '3vw', display: "block", cursor: "pointer"}} onClick={() => {navigate('/profilecenter')}}/>
            <h2>Edit profile</h2>
            <form onSubmit={handleSubmit} className="edit-profile-form">
                <div>
